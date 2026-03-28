@@ -1,0 +1,80 @@
+name: DevSecOps CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-sast-deploy-dast:
+    runs-on: testing
+
+    steps:
+      # 🔹 1. Checkout Code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # 🔹 2. Setup Node.js
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      # 🔹 3. Install Dependencies
+      - name: Install Dependencies
+        run: npm install
+
+      # 🔹 4. Build Application
+      - name: Build App
+        run: npm run build
+
+      # 🔹 5. SAST - SonarQube Scan
+      - name: SonarQube Scan
+        run: |
+          sonar-scanner \
+          -Dsonar.projectKey=nextjs-app \
+          -Dsonar.sources=. \
+          -Dsonar.host.url=http://${{ secrets.SONAR_HOST }} \
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+
+      # 🔹 6. Wait for Quality Gate
+      - name: Check SonarQube Quality Gate
+        run: |
+          echo "Waiting for SonarQube Quality Gate..."
+          sleep 15
+
+          STATUS=$(curl -s -u ${{ secrets.SONAR_TOKEN }}: \
+          "http://${{ secrets.SONAR_HOST }}/api/qualitygates/project_status?projectKey=nextjs-app" \
+          | jq -r '.projectStatus.status')
+
+          echo "Quality Gate Status: $STATUS"
+
+          if [ "$STATUS" != "OK" ]; then
+            echo "Quality Gate Failed. Stopping pipeline."
+            exit 1
+          fi
+
+      # 🔹 7. Deploy to EC2
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_IP }}
+          username: devops
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ~/app/lt-nilavan
+            git pull origin main
+            npm install --no-audit --no-fund
+            npm run build
+            pm2 restart all
+
+      # 🔹 8. DAST - OWASP ZAP Scan (Post-deploy)
+      - name: OWASP ZAP Baseline Scan
+        run: |
+          sudo docker run --rm \
+            --network host \
+            -v "$(pwd):/zap/wrk" \
+            ghcr.io/zaproxy/zaproxy:stable \
+            zap-baseline.py \
+            -t https://${{ secrets.DOMAIN }} \
+            -r zap-report-${{ github.sha }}.html || true
