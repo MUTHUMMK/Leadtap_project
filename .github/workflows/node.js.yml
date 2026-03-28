@@ -62,6 +62,7 @@ jobs:
           port: 222
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            bash
             cd /app
             git pull origin main
             cd /Leadtap_project/app
