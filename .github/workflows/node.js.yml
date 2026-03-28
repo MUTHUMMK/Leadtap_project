@@ -54,12 +54,13 @@ jobs:
           fi
 
       # 🔹 7. Deploy to EC2
-      - name: Deploy to EC2
+      - name: Deploy
         uses: appleboy/ssh-action@v0.1.10
         with:
-          host: ${{ secrets.EC2_IP }}
+          host: ${{ secrets.HOST }}
           username: devops
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 222
+          key: ${{ secrets.SSH_KEY }}
           script: |
             cd ~/Leadtap_project/app
             git pull origin main
