@@ -62,8 +62,9 @@ jobs:
           port: 222
           key: ${{ secrets.SSH_KEY }}
           script: |
-            cd ~/Leadtap_project/app
+            cd /app
             git pull origin main
+            cd /Leadtap_project/app
             npm install --no-audit --no-fund
             npm run build
             pm2 restart all
