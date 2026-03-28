@@ -31,10 +31,8 @@ jobs:
       - name: SonarQube Scan
         run: |
           sonar-scanner \
-          -Dsonar.projectKey=nextjs-app \
-          -Dsonar.sources=. \
-          -Dsonar.host.url=http://${{ secrets.SONAR_HOST }} \
-          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+              -Dsonar.host.url=http://${{ secrets.SONAR_HOST }}:9000 \
+              -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
       # 🔹 6. Wait for Quality Gate
       - name: Check SonarQube Quality Gate
