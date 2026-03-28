@@ -25,10 +25,7 @@ jobs:
         run: |
              cd /home/ubuntu/App/actions-runner/_work/Leadtap_project/Leadtap_project/app
              npm install
-
-      # 🔹 4. Build Application
-      - name: Build App
-        run: npm run build
+             npm run build
 
       # 🔹 5. SAST - SonarQube Scan
       - name: SonarQube Scan
