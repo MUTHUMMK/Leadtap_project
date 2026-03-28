@@ -60,7 +60,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: devops
           port: 222
-          key: ${{ secrets.SSH_KEY }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /app
             git pull origin main
