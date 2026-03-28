@@ -43,7 +43,7 @@ jobs:
           sleep 15
 
           STATUS=$(curl -s -u ${{ secrets.SONAR_TOKEN }}: \
-          "http://${{ secrets.SONAR_HOST }}/api/qualitygates/project_status?projectKey=nextjs-app" \
+          "http://${{ secrets.SONAR_HOST }}:9000/api/qualitygates/project_status?projectKey=nextjs-app" \
           | jq -r '.projectStatus.status')
 
           echo "Quality Gate Status: $STATUS"
