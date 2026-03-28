@@ -4,6 +4,7 @@
 This project implements a complete DevSecOps CI/CD pipeline using GitHub Actions, SonarQube, and OWASP ZAP.
 
 It automates:
+![alt text](<mermaid-diagram.png>)
 
 🧑‍💻 Code push from developer
 🧪 Static Application Security Testing (SAST)

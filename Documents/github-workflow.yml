@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build-sast-deploy-dast:
+  build:
     runs-on: testing
 
     steps:
@@ -22,52 +22,47 @@ jobs:
 
       # 🔹 3. Install Dependencies
       - name: Install Dependencies
-        run: npm install
-
-      # 🔹 4. Build Application
-      - name: Build App
-        run: npm run build
-
+        run: |
+             cd /home/ubuntu/App/actions-runner/_work/Leadtap_project/Leadtap_project/app
+             npm install
+             npm run build
       # 🔹 5. SAST - SonarQube Scan
       - name: SonarQube Scan
         run: |
           sonar-scanner \
-          -Dsonar.projectKey=nextjs-app \
-          -Dsonar.sources=. \
-          -Dsonar.host.url=http://${{ secrets.SONAR_HOST }} \
-          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
-
-      # 🔹 6. Wait for Quality Gate
+              -Dsonar.projectKey=nextjs-app \
+              -Dsonar.host.url=http://${{ secrets.SONAR_HOST }}:9000 \
+              -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
+              -Dsonar.sources=.
+      # 🔹 6. Wait for Quality Gate#
       - name: Check SonarQube Quality Gate
         run: |
           echo "Waiting for SonarQube Quality Gate..."
           sleep 15
-
           STATUS=$(curl -s -u ${{ secrets.SONAR_TOKEN }}: \
-          "http://${{ secrets.SONAR_HOST }}/api/qualitygates/project_status?projectKey=nextjs-app" \
+          "http://${{ secrets.SONAR_HOST }}:9000/api/qualitygates/project_status?projectKey=nextjs-app" \
           | jq -r '.projectStatus.status')
-
           echo "Quality Gate Status: $STATUS"
-
           if [ "$STATUS" != "OK" ]; then
             echo "Quality Gate Failed. Stopping pipeline."
             exit 1
           fi
-
       # 🔹 7. Deploy to EC2
-      - name: Deploy to EC2
+      - name: Deploy
         uses: appleboy/ssh-action@v0.1.10
         with:
-          host: ${{ secrets.EC2_IP }}
+          host: ${{ secrets.HOST }}
           username: devops
+          port: 222
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd ~/app/lt-nilavan
+            bash
+            cd /home/devops/Leadtap_project
             git pull origin main
+            cd /home/devops/Leadtap_project/app
             npm install --no-audit --no-fund
             npm run build
             pm2 restart all
-
       # 🔹 8. DAST - OWASP ZAP Scan (Post-deploy)
       - name: OWASP ZAP Baseline Scan
         run: |
