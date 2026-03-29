@@ -99,7 +99,7 @@ npm audit fix --force
 
 3️⃣ 🛡️ DAST – OWASP ZAP & Runtime Security
 
-ZAP Scan Report - zap-report.html
+![ZAP Scan Report](<zap-report.html>)
 
 🔍 Findings
 No active injection vulnerabilities detected
@@ -277,16 +277,19 @@ curl -I https://YourDomain
 X-Powered-By: Next.js exposes framework info (minor info disclosure)
 
 📊 FINAL SECURITY SUMMARY:
+```bash
 Category	Status
 SAST (SonarQube)	✅ Passed
 SCA (npm audit)	❌ High/Critical Issues Found
 DAST (ZAP)	✅ No major vulnerabilities
 Runtime Security	⚠️ Misconfiguration detected
 Server Hardening	✅ .git blocked, headers OK
+```
 
-🚨 OVERALL SECURITY RATING:
+🚨 OVERALL SECURITY RATING 
+```bash
 🟠 MEDIUM RISK (Production NOT fully secure)
-
+```
 🛠️ PRIORITY FIX LIST:
 ```bash
 🔴 Critical
