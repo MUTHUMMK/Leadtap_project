@@ -40,7 +40,7 @@ jobs:
       - name: Check SonarQube Quality Gate
         run: |
           echo "Waiting for SonarQube Quality Gate..."
-          sleep 15
+          sleep 5
 
           STATUS=$(curl -s -u ${{ secrets.SONAR_TOKEN }}: \
           "http://${{ secrets.SONAR_HOST }}:9000/api/qualitygates/project_status?projectKey=nextjs-app" \
