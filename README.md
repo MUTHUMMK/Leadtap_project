@@ -4,16 +4,30 @@
 
 This project implements a complete DevSecOps CI/CD pipeline using GitHub Actions, SonarQube, and OWASP ZAP.
 
+
+GitHub Actions CI/CD
+        |
+        |—— SAST → SonarQube (code scan)
+        |
+        |—— SCA → npm audit
+        |
+        |—— Build Next.js app
+        |
+        |—— Deploy to server
+        |
+        |—— DAST → OWASP ZAP scan (live URL)
+
 It automates:
 
-- 🧑‍💻 Code push from developer  
-- 🧪 Static Application Security Testing (SAST)  
-- 🔍 SonarQube Quality Gate validation  
-- 🚀 Automated deployment via SSH  
-- 🛡️ Dynamic Application Security Testing (DAST)  
-- 📊 Security report generation  
+ ## Code push from developer
+ ## Static Application Security Testing (SAST)
+ ## SonarQube Quality Gate validation
+ ## Software Composition Analysis (SCA) for dependency vulnerability scanning
+ ## Automated deployment via SSH
+ ## Dynamic Application Security Testing (DAST)
+ ## Security report generation
 
-## 🏗️ Architecture
+##  Architecture
 
 ![alt text](<mermaid-diagram.png>)
 
@@ -27,15 +41,15 @@ It automates:
 - AWS EC2
 - SSH Key Authentication
 
-## 🔐 Pipeline Stages
+## Pipeline Stages
 
 ### SAST
 SonarScanner runs static analysis and blocks pipeline on failure.
 
-### Build
-npm install && npm run build
+### SCA
+SCA scans project dependencies (npm packages) to identify known vulnerabilities in third-party libraries.
 
-### Deploy
+### Build & Deploy
 git pull origin main
 npm install
 npm run build
@@ -47,9 +61,8 @@ OWASP ZAP scans deployed application for runtime vulnerabilities.
 ## 📊 Output
 - SonarQube Report
 - ZAP HTML Report
-- Security Markdown Report
 
-## 🚀 Benefits
+##  Benefits
 - Automated security pipeline
 - Shift-left security
 - Production-ready DevSecOps flow
