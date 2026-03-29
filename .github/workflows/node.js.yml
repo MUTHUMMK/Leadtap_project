@@ -30,6 +30,7 @@ jobs:
       # SAST - SonarQube Scan
       - name: SonarQube Scan
         run: |
+          pwd
           sonar-scanner \
               -Dsonar.projectKey=nextjs-app \
               -Dsonar.host.url=http://${{ secrets.SONAR_HOST }}:9000 \
@@ -71,9 +72,9 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             bash
-            cd /home/devops/Leadtap_project
+            cd ${{ secrets.DEPLOY_PATH }} 
             git pull origin main
-            cd /home/devops/Leadtap_project/app
+            cd ${{ secrets.DEPLOY_PATH }}/app
             npm install --no-audit --no-fund
             npm run build
             pm2 restart all
