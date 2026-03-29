@@ -1,12 +1,5 @@
-✔ SAST (SonarQube + screenshot)
-✔ SCA (npm audit output)
-✔ DAST (OWASP ZAP + runtime results)
-✔ Manual penetration tests (curl attacks)
-✔ Misconfiguration findings (SendGrid error)
-✔ Server hardening checks (.git blocked, headers OK)
 
-📄 SECURITY_VULNERABILITIES.md
-# 🔐 Security Vulnerability Assessment Report
+# 🔐 Security Vulnerability Assessment Report:
 
 This document summarizes the complete **DevSecOps security testing results** for the application, including:
 
@@ -18,9 +11,9 @@ This document summarizes the complete **DevSecOps security testing results** for
 
 ---
 
-# 1️⃣ 🧪 SAST – SonarQube Code Analysis
+# 1️⃣  SAST – SonarQube Code Analysis
 
-## 📊 SonarQube Dashboard Result (http://localhost:9000)
+# SonarQube Dashboard Result (http://Sonaeqube:9000)
 
 ![SonarQube Report](<Sonar_report.png>)
 
@@ -41,16 +34,14 @@ This document summarizes the complete **DevSecOps security testing results** for
 
 ---
 
-# 2️⃣ 📦 SCA – Dependency Vulnerability Scan
+# 2️⃣ SCA – Dependency Vulnerability Scan
 
+##  npm audit Results
 ![npm audit Report](<npm_audit_report>)
-
-## ⚠️ npm audit Results
 
 9 vulnerabilities (3 moderate, 4 high, 2 critical)
 
-
-### 🚨 Critical Vulnerabilities Found
+### Critical Vulnerabilities Found
 
 #### 🔴 next (Critical)
 - Server Actions DoS vulnerability
@@ -85,7 +76,7 @@ This document summarizes the complete **DevSecOps security testing results** for
 
 ---
 
-## 🛠️ Recommended Fix
+##  Recommended Fix
 
 ```bash
 npm audit fix
@@ -102,22 +93,30 @@ npm audit fix --force
 ![ZAP Scan Report](<zap-report.html>)
 
 🔍 Findings
+```bash
 No active injection vulnerabilities detected
 No exposed admin endpoints
 Basic runtime security validated
-
+```
 ⚙️ Runtime Misconfiguration Found
+```bash
 ⚠️ SendGrid API Error
 {"error":"SendGrid API key not configured"}
+```
 📌 Issue
+```bash
 API key missing in environment configuration
 Error exposes internal service dependency
+```
 📍 OWASP Category
-
+```bash
 A05: Security Misconfiguration
+```
 🛠️ Fix
+```bash
 Store API key in .env
 Use AWS Secrets Manager
+```
 
 4️⃣  Manual Security Testing (Penetration Tests)
 
