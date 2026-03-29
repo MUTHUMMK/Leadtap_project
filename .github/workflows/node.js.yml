@@ -25,6 +25,7 @@ jobs:
         run: |
              cd /home/ubuntu/App/actions-runner/_work/Leadtap_project/Leadtap_project/app
              npm ci
+             npm run build
 
 
       # SAST - SonarQube Scan
