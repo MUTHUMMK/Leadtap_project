@@ -35,13 +35,13 @@ jobs:
               -Dsonar.projectKey=nextjs-app \
               -Dsonar.host.url=http://${{ secrets.SONAR_HOST }}:9000 \
               -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
-              -Dsonar.sources=.
+              -Dsonar.sources=app
 
       # Wait for Quality Gate#
       - name: Check SonarQube Quality Gate
         run: |
           echo "Waiting for SonarQube Quality Gate..."
-          sleep 5
+          sleep 10
 
           STATUS=$(curl -s -u ${{ secrets.SONAR_TOKEN }}: \
           "http://${{ secrets.SONAR_HOST }}:9000/api/qualitygates/project_status?projectKey=nextjs-app" \
