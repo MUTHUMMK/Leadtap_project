@@ -4,6 +4,9 @@
 
 This project implements a complete DevSecOps CI/CD pipeline using GitHub Actions, SonarQube, and OWASP ZAP.
 
+##  Architecture
+
+![Create Testing & Deployment Server ](<DEPLOYMENT.md>)
 
 GitHub Actions CI/CD
         |
@@ -27,9 +30,7 @@ It automates:
  ## Dynamic Application Security Testing (DAST)
  ## Security report generation
 
-##  Architecture
 
-![alt text](<mermaid-diagram.png>)
 
 ## ⚙️ Tech Stack
 

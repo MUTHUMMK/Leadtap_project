@@ -21,6 +21,8 @@ The application is deployed using a two-server architecture to separate producti
 
 ## Infrastructure Setup
 
+![Tesing Server Setup](<./Documents/testing-server-setup.md>)
+
 ### 1. Security & CI/CD Server (t3.medium)
 
 This server is dedicated to security testing and CI/CD execution.
@@ -49,7 +51,8 @@ This server is dedicated to security testing and CI/CD execution.
 
 ---
 
-### 2. Production Server (t3.micro)
+### 2. Production Server (t3.micro) 
+![Production Server Setup](<./Documents/linux-deploy-setup.md>)
 
 This server hosts the live application.
 
@@ -83,6 +86,9 @@ This server hosts the live application.
 
 ## CI/CD Pipeline Workflow
 
+# Create the CI/CD Pipeline workflow 
+![CI/CD Pipeline Setup](<./Documents/ci_cd_pipeline.md>)
+
 A secure CI/CD pipeline is implemented using GitHub Actions with a self-hosted runner on the testing server.
 
 ### Pipeline Flow:
@@ -106,7 +112,16 @@ A secure CI/CD pipeline is implemented using GitHub Actions with a self-hosted r
 - If passed:
   - Proceed to deployment
 
-### Step 4: Deployment
+### Step 4: SCA (Software Composition Analysis)
+
+- Run dependency vulnerability scan using:
+  - `npm audit` 
+- Checks performed:
+  - Vulnerable npm packages
+  - Known CVEs in dependencies
+  - Outdated librariess
+
+### Step 5: Deployment
 - Application is deployed to production server (t3.micro) via SSH
 - Commands executed:
   - Pull latest code
@@ -115,16 +130,16 @@ A secure CI/CD pipeline is implemented using GitHub Actions with a self-hosted r
   - Restart using PM2
 
 ### Step 5: DAST (Dynamic Analysis)
-- OWASP ZAP is executed against live domain (https://xxx.com)
+- OWASP ZAP is executed against live domain (https://yourdomain.com)
 - Performs baseline security scan
 
-### Step 6: Report Generation
+### Step 7: Report Generation
 - ZAP generates HTML report
 - Report naming format:
-  zap-report-<commit-id>.html
+  zap-report-<commit-id>.html 
 - Stored on testing server for analysis
 
-### Step 7: Pipeline Validation
+### Step 8: Pipeline Validation
 - If vulnerabilities are detected:
   - Pipeline is marked as failed
 - Ensures continuous security validation
@@ -169,7 +184,7 @@ A secure CI/CD pipeline is implemented using GitHub Actions with a self-hosted r
 
 This architecture provides:
 - Secure and automated deployment
-- Integrated SAST and DAST security checks
+- Integrated SAS, SCA, DAST security checks
 - Separation of concerns between environments
 - Scalable and maintainable DevSecOps workflow
 
