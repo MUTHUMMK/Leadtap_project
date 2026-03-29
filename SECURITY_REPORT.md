@@ -15,7 +15,7 @@ This document summarizes the complete **DevSecOps security testing results** for
 
 # SonarQube Dashboard Result (http://Sonaeqube:9000)
 
-![SonarQube Report](<./Documents/Sonar_report.png>)
+![Click ==>> SonarQube Report](<./Documents/Sonar_report.png>)
 
 
 
@@ -37,7 +37,7 @@ This document summarizes the complete **DevSecOps security testing results** for
 # 2️⃣ SCA – Dependency Vulnerability Scan
 
 ##  npm audit Results
-![npm audit Report](<./Documents/npm_audit_report>)
+![Click ==>> npm audit Report](<./Documents/npm_audit_report>)
 
 9 vulnerabilities (3 moderate, 4 high, 2 critical)
 
@@ -90,7 +90,7 @@ npm audit fix --force
 
 3️⃣ DAST – OWASP ZAP & Runtime Security
 
-![ZAP Scan Report](<./Documents/zap-report.html>)
+![Click ==>> ZAP Scan Report](<./Documents/zap-report-0ca296b3.html>)
 
 Findings
 ```bash

@@ -6,7 +6,7 @@ This project implements a complete DevSecOps CI/CD pipeline using GitHub Actions
 
 ##  Architecture
 
-![Create Testing & Deployment Server ](<DEPLOYMENT.md>)
+![Click ==>> Create Testing & Deployment Server ](<DEPLOYMENT.md>)
 
 GitHub Actions CI/CD
         |
