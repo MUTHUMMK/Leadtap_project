@@ -10,24 +10,24 @@ jobs:
     runs-on: testing
 
     steps:
-      # 🔹 1. Checkout Code
+      # Checkout Code
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # 🔹 2. Setup Node.js
+      # Setup Node.js
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: "18"
 
-      # 🔹 3. Install Dependencies
+      # Install Dependencies
       - name: Install Dependencies
         run: |
              cd /home/ubuntu/App/actions-runner/_work/Leadtap_project/Leadtap_project/app
-             npm install
-             npm run build
+             npm ci
 
-      # 🔹 5. SAST - SonarQube Scan
+
+      # SAST - SonarQube Scan
       - name: SonarQube Scan
         run: |
           sonar-scanner \
@@ -36,7 +36,7 @@ jobs:
               -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
               -Dsonar.sources=.
 
-      # 🔹 6. Wait for Quality Gate#
+      # Wait for Quality Gate#
       - name: Check SonarQube Quality Gate
         run: |
           echo "Waiting for SonarQube Quality Gate..."
@@ -52,8 +52,14 @@ jobs:
             echo "Quality Gate Failed. Stopping pipeline."
             exit 1
           fi
-
-      # 🔹 7. Deploy to EC2
+      
+      # SCA
+      - name: SCA - Dependency Security Check
+        run: |
+            npm audit fix || true
+            npm audit --audit-level=high
+            
+      # Deploy to EC2
       - name: Deploy
         uses: appleboy/ssh-action@v0.1.10
         with:
@@ -70,7 +76,7 @@ jobs:
             npm run build
             pm2 restart all
 
-      # 🔹 8. DAST - OWASP ZAP Scan (Post-deploy)
+      # DAST - OWASP ZAP Scan (Post-deploy)
       - name: OWASP ZAP Baseline Scan
         run: |
           sudo docker run --rm \
