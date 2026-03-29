@@ -56,7 +56,7 @@ jobs:
       # SCA
       - name: SCA - Dependency Security Check
         run: |
-            npm audit fix || true
+            npm audit fix --force || true  # --force → forces major version upgrades (can break app)
             npm audit --audit-level=high
             
       # Deploy to EC2

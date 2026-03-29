@@ -70,7 +70,7 @@ sudo systemctl restart ssh
 
 ---
 
-# 🔥 4️⃣ Configure UFW Firewall
+# 4️⃣ Configure UFW Firewall
 
 ```bash
 sudo apt install ufw -y
@@ -93,7 +93,7 @@ sudo ufw allow 3000/tcp
 
 ---
 
-## 🛡️ Security Enhancements
+## Security Enhancements
 
 ```bash
 sudo ufw limit 222/tcp
@@ -193,7 +193,7 @@ sudo nano /etc/nginx/sites-available/app.conf
 ## Config
 
 ```nginx
-# 🔥 Rate Limiting Zone (add in http block in nginx.conf)
+#  Rate Limiting Zone (add in http block in nginx.conf)
 limit_req_zone $binary_remote_addr zone=api_limit:10m rate=5r/s;
 
 server {
@@ -279,7 +279,7 @@ Node.js App (PM2 on 3000)
 
 ---
 
-# 🔐 Final Result
+# Final Result
 
 ✔ Secure SSH login  
 ✔ Firewall enabled  

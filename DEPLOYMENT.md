@@ -21,7 +21,7 @@ The application is deployed using a two-server architecture to separate producti
 
 ## Infrastructure Setup
 
-![Tesing Server Setup](<./Documents/testing-server-setup.md>)
+![Testing Server Setup](<./Documents/testing-server-setup.md>)
 
 ### 1. Security & CI/CD Server (t3.medium)
 

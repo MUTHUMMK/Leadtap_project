@@ -1,5 +1,5 @@
 
-# 🔐 Security Vulnerability Assessment Report:
+### Security Vulnerability Assessment Report:
 
 This document summarizes the complete **DevSecOps security testing results** for the application, including:
 
@@ -27,7 +27,7 @@ This document summarizes the complete **DevSecOps security testing results** for
 - Coverage: 0%
 - Duplications: 0%
 
-### 🔍 Observation
+### Observation
 - No critical code-level vulnerabilities found
 - Code quality is clean and production-ready
 - Security rules successfully passed
@@ -88,27 +88,27 @@ npm audit fix --force
 ```
 --- 
 
-3️⃣ 🛡️ DAST – OWASP ZAP & Runtime Security
+3️⃣ DAST – OWASP ZAP & Runtime Security
 
 ![ZAP Scan Report](<./Documents/zap-report.html>)
 
-🔍 Findings
+Findings
 ```bash
 No active injection vulnerabilities detected
 No exposed admin endpoints
 Basic runtime security validated
 ```
-⚙️ Runtime Misconfiguration Found
+Runtime Misconfiguration Found
 ```bash
-⚠️ SendGrid API Error
+SendGrid API Error
 {"error":"SendGrid API key not configured"}
 ```
-📌 Issue
+Issue
 ```bash
 API key missing in environment configuration
 Error exposes internal service dependency
 ```
-📍 OWASP Category
+OWASP Category
 ```bash
 A05: Security Misconfiguration
 ```
@@ -229,41 +229,39 @@ app.use(cors({
 ```bash
 app.use(express.json({ limit: "10kb" }));
 ```
-📊 Final Security Impact After Fix:
+## Final Security Impact After Fix:
 Test	Before Fix	After Fix
 POST Attack	Allowed	Rate Limited
 XSS Input	Accepted	Sanitized / Blocked
 SendGrid Error	Exposed	Hidden (Generic Error)
 
-Conclusion:
-
+# Conclusion:
 ```bash
 ✔ System is functionally secure
 ✔ No active exploitation observed
-⚠️ Improvements required in:
 ```
-
+# Improvements required in:
 Rate limiting
 Error handling
 Input validation
 
 ### 5️ Sensitive Endpoint Exposure Test
-📌 .git folder access test
+# .git folder access test
 ```bash
 curl https://YourDomain/.git/HEAD
 ```
 Result:
 403 Forbidden
 
-✅ Observation:
+Observation:
 Directory access properly blocked via Nginx
 No source code leakage
 
-### 5 🌐 HTTP Security Header Check
+### 5  HTTP Security Header Check
 ```bash
 curl -I https://YourDomain
 ```
-📊 Response Analysis
+## Response Analysis
 
 ✔ HTTPS enabled
 ✔ Server: Nginx
@@ -305,7 +303,7 @@ Add SendGrid API key securely
 Remove exposed error messages
 
 ```
-📌 CONCLUSION
+### CONCLUSION
 
 ## The application has:
 
@@ -318,7 +316,6 @@ Functional DAST protection
 Dependency vulnerabilities exist
 Critical Next.js security patches required
 Runtime misconfiguration present
-
 
 ---
 

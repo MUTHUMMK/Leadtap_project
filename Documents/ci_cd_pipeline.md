@@ -81,8 +81,8 @@ Add the following secrets:
 | SSH_PRIVATE_KEY | Private key for EC2 SSH access |
 | SONAR_HOST | http://sona_qube_server_ip:9000 |
 | SONAR_TOKEN | SonarQube authentication token |
-| DOMAIN | Application domain (e.g. devops.com) |
-| HOST | Deployment username (e.g. ubuntu/devops) |
+| DOMAIN | Application domain (e.g. https://Yourdomain.com) |
+| HOST | Deployment username (e.g. ubuntu or devops) |
 
 ---
 
