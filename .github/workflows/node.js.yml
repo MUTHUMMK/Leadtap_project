@@ -57,6 +57,7 @@ jobs:
       # SCA
       - name: SCA - Dependency Security Check
         run: |
+            cd /home/ubuntu/App/actions-runner/_work/Leadtap_project/Leadtap_project/app
             npm ci
             npm audit fix || true 
             # npm audit --audit-level=high
