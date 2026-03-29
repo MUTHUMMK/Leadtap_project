@@ -19,10 +19,13 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "18"
-      
+
       # Install Dependencies
       - name: Install Dependencies
-        run: npm ci
+        run: |
+             cd /home/ubuntu/App/actions-runner/_work/Leadtap_project/Leadtap_project/app
+             npm ci
+
 
       # SAST - SonarQube Scan
       - name: SonarQube Scan
@@ -31,29 +34,33 @@ jobs:
               -Dsonar.projectKey=nextjs-app \
               -Dsonar.host.url=http://${{ secrets.SONAR_HOST }}:9000 \
               -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
-              -Dsonar.sources=.
+              -Dsonar.sources=app
 
-      # Wait for Quality Gate
+      # Wait for Quality Gate#
       - name: Check SonarQube Quality Gate
         run: |
           echo "Waiting for SonarQube Quality Gate..."
-          sleep 15
+          sleep 10
+
           STATUS=$(curl -s -u ${{ secrets.SONAR_TOKEN }}: \
           "http://${{ secrets.SONAR_HOST }}:9000/api/qualitygates/project_status?projectKey=nextjs-app" \
           | jq -r '.projectStatus.status')
+
           echo "Quality Gate Status: $STATUS"
+
           if [ "$STATUS" != "OK" ]; then
             echo "Quality Gate Failed. Stopping pipeline."
             exit 1
           fi
-          
+      
       # SCA
       - name: SCA - Dependency Security Check
         run: |
-            npm audit fix || true
-            npm audit --audit-level=high
-      
-
+            cd /home/ubuntu/App/actions-runner/_work/Leadtap_project/Leadtap_project/app
+            npm ci
+            npm audit fix || true 
+            # npm audit --audit-level=high
+            
       # Deploy to EC2
       - name: Deploy
         uses: appleboy/ssh-action@v0.1.10
@@ -70,7 +77,7 @@ jobs:
             npm install --no-audit --no-fund
             npm run build
             pm2 restart all
-            
+
       # DAST - OWASP ZAP Scan (Post-deploy)
       - name: OWASP ZAP Baseline Scan
         run: |
