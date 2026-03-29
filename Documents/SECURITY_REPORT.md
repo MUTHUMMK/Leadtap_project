@@ -43,8 +43,9 @@ This document summarizes the complete **DevSecOps security testing results** for
 
 # 2️⃣ 📦 SCA – Dependency Vulnerability Scan
 
-## ⚠️ npm audit Results
+![npm audit Report](<npm_audit_report>)
 
+## ⚠️ npm audit Results
 
 9 vulnerabilities (3 moderate, 4 high, 2 critical)
 
@@ -93,14 +94,18 @@ npm audit fix --force
 ✔ Upgrade Next.js to patched version
 ✔ Replace vulnerable dependencies
 
+```
+--- 
+
 3️⃣ 🛡️ DAST – OWASP ZAP & Runtime Security
 
-![ZAP Scan Report](<zap-report.html>)
+ZAP Scan Report - zap-report.html
 
 🔍 Findings
 No active injection vulnerabilities detected
 No exposed admin endpoints
 Basic runtime security validated
+
 ⚙️ Runtime Misconfiguration Found
 ⚠️ SendGrid API Error
 {"error":"SendGrid API key not configured"}
@@ -108,14 +113,15 @@ Basic runtime security validated
 API key missing in environment configuration
 Error exposes internal service dependency
 📍 OWASP Category
+
 A05: Security Misconfiguration
 🛠️ Fix
 Store API key in .env
-Use AWS Secrets Manager / SSM Parameter Store
+Use AWS Secrets Manager
 
-4️⃣ 🔍 Manual Security Testing (Penetration Tests)
+4️⃣  Manual Security Testing (Penetration Tests)
 
-## 📌 API Attack Simulation Results
+##  API Attack Simulation Results
 
 ---
 
@@ -125,35 +131,50 @@ Use AWS Secrets Manager / SSM Parameter Store
 for i in $(seq 1 10); do
   curl -X POST https://YourDomain/api/sendgrid
 done
-❌ Result
+```
+Result:
+```bash
 {"error":"SendGrid API key not configured"}
-⚠️ Observation
+```
+Observation:
 API allowed repeated requests
 No rate limiting enabled
 Misconfiguration error exposed
+
 ### 2️ XSS Injection Test
+```bash
 curl -X POST https://YourDomain/api/sendgrid \
 -d '{"message":"<script>alert(1)</script>"}'
-❌ Result
+```
+
+Result:
+```bash
 {"error":"SendGrid API key not configured"}
-✔ Observation
+```
+Observation:
 No script execution observed
 Input not rendered in UI
 Currently safe, but input not validated
+
 ### 3 Security Issues Identified & Fixes
-🔴 Issue 1: SendGrid API Key Misconfiguration Exposure
-❌ Problem
 
-Application exposes internal error:
+Issue 1: SendGrid API Key Misconfiguration Exposure
+Problem -> Application exposes internal error:
 
+```bash
 {"error":"SendGrid API key not configured"}
-🚨 Risk
+```
+Risk:
 Internal system exposure
 OWASP A05: Security Misconfiguration
-🛠️ Fix
+
+Fix:
 ✔ Use environment variables
+```bash
 SENDGRID_API_KEY=your_key_here
+```
 ✔ Do not expose internal errors
+```bash
 if (!process.env.SENDGRID_API_KEY) {
   console.error("SendGrid config missing");
 
@@ -161,12 +182,12 @@ if (!process.env.SENDGRID_API_KEY) {
     error: "Internal Server Error"
   });
 }
-🟠 Issue 2: Missing Rate Limiting (DoS Risk)
-❌ Problem
+```
+Issue 2: Missing Rate Limiting (DoS Risk)
+Problem -> Repeated API calls are allowed without restriction.
 
-Repeated API calls are allowed without restriction.
-
-🛠️ Fix
+Fix:
+```bash
 npm install express-rate-limit
 import rateLimit from "express-rate-limit";
 
@@ -179,39 +200,49 @@ const limiter = rateLimit({
 });
 
 app.use("/api", limiter);
-🟡 Issue 3: XSS Input Handling
-❌ Risk
+```
+Issue 3: XSS Input Handling
+Risk -> User input may contain malicious scripts
 
-User input may contain malicious scripts.
-
-🛠️ Fix
+Fix:
+```bash
 npm install validator
 import validator from "validator";
 
 const message = validator.escape(req.body.message);
+```
 ### 4 Security Hardening Improvements
 ✔ Add Security Headers
+```bash
 npm install helmet
 import helmet from "helmet";
 app.use(helmet());
+```
 ✔ Enable CORS Restriction
+```bash
 import cors from "cors";
 
 app.use(cors({
   origin: "https://yourdomain.com"
 }));
+```
 ✔ Limit Request Payload Size
+```bash
 app.use(express.json({ limit: "10kb" }));
-📊 Final Security Impact After Fix
+```
+📊 Final Security Impact After Fix:
 Test	Before Fix	After Fix
 POST Attack	Allowed	Rate Limited
 XSS Input	Accepted	Sanitized / Blocked
 SendGrid Error	Exposed	Hidden (Generic Error)
-🚀 Conclusion
 
+Conclusion:
+
+```bash
 ✔ System is functionally secure
 ✔ No active exploitation observed
 ⚠️ Improvements required in:
+```
 
 Rate limiting
 Error handling
@@ -219,15 +250,20 @@ Input validation
 
 ### 5️ Sensitive Endpoint Exposure Test
 📌 .git folder access test
+```bash
 curl https://YourDomain/.git/HEAD
+```
 Result:
 403 Forbidden
+
 ✅ Observation:
 Directory access properly blocked via Nginx
 No source code leakage
 
 ### 5 🌐 HTTP Security Header Check
+```bash
 curl -I https://YourDomain
+```
 📊 Response Analysis
 
 ✔ HTTPS enabled
@@ -237,38 +273,45 @@ curl -I https://YourDomain
 ✔ X-XSS-Protection enabled
 ✔ HSTS enabled
 
-⚠️ Note
+##### Note:
 X-Powered-By: Next.js exposes framework info (minor info disclosure)
-📊 FINAL SECURITY SUMMARY
+
+📊 FINAL SECURITY SUMMARY:
 Category	Status
 SAST (SonarQube)	✅ Passed
 SCA (npm audit)	❌ High/Critical Issues Found
 DAST (ZAP)	✅ No major vulnerabilities
 Runtime Security	⚠️ Misconfiguration detected
 Server Hardening	✅ .git blocked, headers OK
-🚨 OVERALL SECURITY RATING
+
+🚨 OVERALL SECURITY RATING:
 🟠 MEDIUM RISK (Production NOT fully secure)
-🛠️ PRIORITY FIX LIST
+
+🛠️ PRIORITY FIX LIST:
+```bash
 🔴 Critical
 Upgrade Next.js (security patches)
 Fix axios, form-data vulnerabilities
+
 🟠 High
 glob, lodash, minimatch upgrades
+
 🟡 Medium
 yaml dependency fix
 ⚙️ Misconfiguration
 Add SendGrid API key securely
 Remove exposed error messages
 
+```
 📌 CONCLUSION
 
-The application has:
+## The application has:
 
 Strong SAST results (clean code)
 Proper server hardening
 Functional DAST protection
 
-BUT:
+## BUT:
 
 Dependency vulnerabilities exist
 Critical Next.js security patches required
