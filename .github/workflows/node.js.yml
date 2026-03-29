@@ -23,7 +23,7 @@ jobs:
       # Install Dependencies
       - name: Install Dependencies
         run: |
-             cd ${{ secrets.PATH }} 
+             cd /home/ubuntu/App/actions-runner/_work/Leadtap_project/Leadtap_project/app
              npm ci
 
 
@@ -59,7 +59,7 @@ jobs:
       # SCA
       - name: SCA - Dependency Security Check
         run: |
-            cd ${{ secrets.PATH }} 
+            cd /home/ubuntu/App/actions-runner/_work/Leadtap_project/Leadtap_project/app
             npm ci
             npm audit fix || true 
             # npm audit --audit-level=high
@@ -74,9 +74,9 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             bash
-            cd ${{ secrets.DEPLOY_PATH }} 
+            cd /home/devops/Leadtap_project
             git pull origin main
-            cd ${{ secrets.DEPLOY_PATH }}/app
+            cd /home/devops/Leadtap_project/app
             npm install --no-audit --no-fund
             npm run build
             pm2 restart all
