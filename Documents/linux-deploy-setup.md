@@ -187,6 +187,9 @@ curl http://localhost:3000
 
 ```bash
 sudo apt install nginx -y
+sudo systemctl enable nginx
+sudo systemctl start nginx
+sudo systemctl status nginx
 ```
 
 ---
