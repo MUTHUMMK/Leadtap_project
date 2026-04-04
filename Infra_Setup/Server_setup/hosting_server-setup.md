@@ -110,6 +110,13 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 ## Load NVM
 
 ```bash
+sudo cp /etc/skel/.bashrc /home/devops/
+
+sudo nano ~/.bashrc
+==>
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
 source ~/.bashrc
 ```
 
@@ -180,6 +187,9 @@ curl http://localhost:3000
 
 ```bash
 sudo apt install nginx -y
+sudo systemctl enable nginx
+sudo systemctl start nginx
+sudo systemctl status nginx
 ```
 
 ---
