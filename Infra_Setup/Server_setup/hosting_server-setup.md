@@ -1,4 +1,4 @@
-# Linux Server Setup & Deployment Guide (DevSecOps)
+## Hosting Server & Deployment - Setup 
 
 This document describes step-by-step setup of Ubuntu 22.04 LTS server, hardening, deployment, and Nginx reverse proxy configuration.
 
@@ -6,7 +6,7 @@ This document describes step-by-step setup of Ubuntu 22.04 LTS server, hardening
 
 # 1 Create Linux Server (Ubuntu 22.04 LTS)
 
-##  Login & Update System
+#  Login & Update System
 
 ```bash
 sudo apt update && sudo apt upgrade -y
@@ -24,7 +24,7 @@ sudo passwd devops
 
 ---
 
-##  User Types
+# User Types
 
 -  Human User:
   - SSH key login
@@ -41,7 +41,7 @@ sudo passwd devops
 sudo nano /etc/ssh/sshd_config
 ```
 
-## Configuration
+# Configuration
 
 ```
 Port 222
