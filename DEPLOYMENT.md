@@ -52,7 +52,7 @@ This server is dedicated to security testing and CI/CD execution.
 ---
 
 ### 2. Production Server (t3.micro) 
-![Click ==>> Production Server Setup](<./Infra_Setup/Server_setup/hosting_server-setup.md>)
+![Click ==>> Hosting Server Setup](<./Infra_Setup/Server_setup/hosting_server-setup.md>)
 
 This server hosts the live application.
 

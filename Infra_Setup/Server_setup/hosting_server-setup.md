@@ -1,10 +1,10 @@
-# 🖥️ Linux Server Setup & Deployment Guide (DevSecOps)
+# Linux Server Setup & Deployment Guide (DevSecOps)
 
 This document describes step-by-step setup of Ubuntu 22.04 LTS server, hardening, deployment, and Nginx reverse proxy configuration.
 
 ---
 
-# 1️⃣ Create Linux Server (Ubuntu 22.04 LTS)
+# 1 Create Linux Server (Ubuntu 22.04 LTS)
 
 ##  Login & Update System
 
@@ -14,7 +14,7 @@ sudo apt update && sudo apt upgrade -y
 
 ---
 
-#  2️⃣ Create DevOps User
+#  2 Create DevOps User
 
 ```bash
 sudo useradd devops
@@ -26,16 +26,16 @@ sudo passwd devops
 
 ##  User Types
 
-- 👤 Human User:
+-  Human User:
   - SSH key login
   - sudo with password
 
-- 🤖 Automation User:
+-  Automation User:
   - Passwordless sudo (restricted usage)
 
 ---
 
-# 3️⃣ SSH Hardening
+# 3 SSH Hardening
 
 ```bash
 sudo nano /etc/ssh/sshd_config
@@ -70,7 +70,7 @@ sudo systemctl restart ssh
 
 ---
 
-# 4️⃣ Configure UFW Firewall
+# 4 Configure UFW Firewall
 
 ```bash
 sudo apt install ufw -y
@@ -85,10 +85,10 @@ sudo ufw status
 ## Allow Ports
 
 ```bash
-sudo ufw allow 222/tcp
+sudo ufw allow 222/tcp # custom SSH port
 sudo ufw allow 80/tcp
 sudo ufw allow 443/tcp
-sudo ufw allow 3000/tcp
+sudo ufw allow 3000/tcp # App running port
 ```
 
 ---
@@ -101,7 +101,7 @@ sudo ufw limit 222/tcp
 
 ---
 
-# 5️⃣ Install Node.js (NVM)
+# 5 Install Node.js (NVM)
 
 ```bash
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
@@ -137,7 +137,7 @@ npm -v
 
 ---
 
-# 6️⃣ Application Deployment
+# 6 Application Deployment
 
 ## Clone Project
 
@@ -156,7 +156,7 @@ npm start
 
 ---
 
-## 🔁 PM2 Process Manager
+##  PM2 Process Manager
 
 ```bash
 npm install pm2 -g
@@ -173,7 +173,7 @@ pm2 save
 
 ---
 
-## 🔍 Check Application
+## Check Application
 
 ```bash
 curl http://localhost:3000
@@ -181,7 +181,7 @@ curl http://localhost:3000
 
 ---
 
-# 🌐 7️⃣ Nginx Reverse Proxy
+# 7 Nginx Reverse Proxy
 
 ## Install Nginx
 
@@ -255,7 +255,7 @@ sudo systemctl restart nginx
 
 ---
 
-# 8️⃣ SSL Configuration (HTTPS)
+# 8 SSL Configuration (HTTPS)
 
 ## Install Certbot
 
