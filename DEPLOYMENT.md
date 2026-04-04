@@ -1,15 +1,15 @@
 # DevSecOps Architecture & CI/CD Workflow
 
 Dev → Code → CI
-               ↓
+                →
       SAST (block if fail)
-               ↓
-       Deploy → Staging
-               ↓
+                →
+       Deploy(Staging)
+                →
            DAST (ZAP)
-               ↓
+                →
             Approval
-               ↓
+                →
             Production
 
 
