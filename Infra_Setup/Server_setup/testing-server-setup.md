@@ -1,13 +1,13 @@
-# 🖥️ Testing Server Setup (DevSecOps Infrastructure)
+# Testing Server Setup (DevSecOps Infrastructure)
 
 This document describes the setup of the Security Testing Server (t3.medium) used for:
-- 🧪 SAST (SonarQube + Sonar Scanner)
-- 🛡️ DAST (OWASP ZAP)
-- 🔍 Security analysis in CI/CD pipeline
+-  SAST (SonarQube + Sonar Scanner)
+-  DAST (OWASP ZAP)
+-  Security analysis in CI/CD pipeline
 
 ---
 
-# 1️⃣ Server Requirements
+# 1️ Server Requirements
 
 ## EC2 Instance
 - Instance Type: t3.medium
@@ -20,7 +20,7 @@ This document describes the setup of the Security Testing Server (t3.medium) use
 
 ---
 
-# 2️⃣ Install SonarQube (Docker)
+# 2️ Install SonarQube (Docker)
 
 ```bash
 docker run -d   -p 9000:9000   --name sonarqube   sonarqube:9.9-community
@@ -34,7 +34,7 @@ http://<server-ip>:9000
 
 ---
 
-# 3️⃣ Install Sonar Scanner CLI
+# 3️ Install Sonar Scanner CLI
 
 ```bash
 sudo wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-8.0.1.6346-linux-x64.zip
@@ -46,7 +46,7 @@ mv sonar-scanner-8.0.1.6346-linux-x64/* /opt/sonar-scanner
 
 ---
 
-## ⚙️ Set PATH
+##  Set PATH
 
 ```bash
 echo 'export PATH=$PATH:/opt/sonar-scanner/bin' >> ~/.bashrc
@@ -63,7 +63,7 @@ sonar-scanner -v
 
 ---
 
-# 4️⃣ SonarQube Project Config
+# 4️ SonarQube Project Config
 
 Create file:
 
@@ -89,7 +89,7 @@ sonar-scanner   -Dsonar.host.url=http://server_ip:9000   -Dsonar.login=<YOUR_SON
 
 ---
 
-# 5️⃣ OWASP ZAP Scan
+# 5️ OWASP ZAP Scan
 
 ```bash
 sudo docker run --rm   --network host   -v "$(pwd):/zap/wrk"   ghcr.io/zaproxy/zaproxy:stable   zap-baseline.py   -t https://YourDomain/api/sendgrid   -r zap-report.html
@@ -97,7 +97,7 @@ sudo docker run --rm   --network host   -v "$(pwd):/zap/wrk"   ghcr.io/zaproxy/z
 
 ---
 
-# 6️⃣ Purpose
+# 6️ Purpose
 
 - SAST → SonarQube
 - SCA → npm audit

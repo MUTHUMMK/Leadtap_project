@@ -21,7 +21,7 @@ The application is deployed using a two-server architecture to separate producti
 
 ## Infrastructure Setup
 
-![Click ==>> Testing Server Setup](<./Documents/testing-server-setup.md>)
+![Click ==>> Testing Server Setup](<./Infra_Setup/Server_setup/testing-server-setup.md>)
 
 ### 1. Security & CI/CD Server (t3.medium)
 
@@ -52,7 +52,7 @@ This server is dedicated to security testing and CI/CD execution.
 ---
 
 ### 2. Production Server (t3.micro) 
-![Click ==>> Production Server Setup](<./Documents/linux-deploy-setup.md>)
+![Click ==>> Production Server Setup](<./Infra_Setup/Server_setup/hosting_server-setup.md>)
 
 This server hosts the live application.
 
@@ -87,7 +87,7 @@ This server hosts the live application.
 ## CI/CD Pipeline Workflow
 
 # Create the CI/CD Pipeline workflow 
-![Click ==>> CI/CD Pipeline Setup](<./Documents/ci_cd_pipeline.md>)
+![Click ==>> CI/CD Pipeline Setup](<./Infra_Setup/CI_CD_Pipeline_setup/CI_CD_Pipeline_setup.md)
 
 A secure CI/CD pipeline is implemented using GitHub Actions with a self-hosted runner on the testing server.
 

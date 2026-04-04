@@ -1,322 +1,304 @@
+# Header vulnerability:
 
-### Security Vulnerability Assessment Report:
+# Vulnerability 1: Missing Security Headers
+# Vulnerability Name: Missing Security Headers
+# OWASP Category: A05: Security Misconfiguration
+# Affected File & Line Number: NGINX / Next.js configuration (headers not set)
 
-This document summarizes the complete **DevSecOps security testing results** for the application, including:
+# Severity: Medium
 
-- 🧪 SAST (SonarQube)
-- 📦 SCA (npm audit)
-- 🛡️ DAST (OWASP ZAP + runtime testing)
-- 🔍 Manual penetration testing
-- ⚙️ Server security configuration checks
+# Description:
 
----
+# The application response headers are missing important security protections such as:
 
-# 1️⃣  SAST – SonarQube Code Analysis
+```
+* Content-Security-Policy
+* X-Frame-Options
+* X-Content-Type-Options
+* Strict-Transport-Security
+```
 
-# SonarQube Dashboard Result (http://Sonaeqube:9000)
+From your response:
+![Click ==>> Missing_Header_Screenshot](<./screenshots/Missing_Header_Screenshot.png>)
 
-![Click ==>> SonarQube Report](<./Documents/Sonar_report.png>)
+```
+HTTP/1.1 200 OK
+Server: nginx/1.18.0 (Ubuntu)
+X-Powered-By: Next.js
+```
+These headers indicate default configuration without security hardening.
 
+# Business Impact: (An attacker can)
+```
+Perform Clickjacking attacks (no X-Frame-Options)
+Execute XSS attacks more easily (no CSP)
+Exploit MIME sniffing vulnerabilities
+Downgrade HTTPS attacks (no HSTS)
+```
+# Proof of Concept:
+```
+curl -I https://muthummk.online
+```
+Observe missing headers in response.
 
+# Fix:
 
-### ✅ Summary
-- Bugs: 0 (A)
-- Vulnerabilities: 0 (A)
-- Code Smells: 0 (A)
-- Security Rating: A
-- Coverage: 0%
-- Duplications: 0%
+# Option 1: Fix in NGINX (app.conf)
 
-### Observation
-- No critical code-level vulnerabilities found
-- Code quality is clean and production-ready
-- Security rules successfully passed
+![Click ==>> Header_added_after_Screenshot](<./screenshots/Header_Added_Screenshot.png>)
+```
+add_header X-Frame-Options "DENY";
+add_header X-Content-Type-Options "nosniff";
+add_header X-XSS-Protection "1; mode=block";
+add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+add_header Content-Security-Policy "default-src 'self';";
+```
 
----
+# Option 2: Fix in Next.js (next.config.js)
+```
+module.exports = {
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Content-Security-Policy", value: "default-src 'self'" }
+        ],
+      },
+    ];
+  },
+};
 
-# 2️⃣ SCA – Dependency Vulnerability Scan
+```
 
-##  npm audit Results
-![Click ==>> npm audit Report](<./Documents/npm_audit_report>)
+# Vulnerability 2: Information Disclosure via Headers
+# OWASP Category: A05: Security Misconfiguration
 
-9 vulnerabilities (3 moderate, 4 high, 2 critical)
+# Severity: Low
 
-### Critical Vulnerabilities Found
+# Description:
+The server exposes technology stack:
+```
+Server: nginx/1.18.0 (Ubuntu)
+X-Powered-By: Next.js
+```
+# Impact:
+```
+Helps attackers identify known vulnerabilities
+Makes targeted attacks easier
+```
+# Proof of Concept:
+```
+curl -I https://muthummk.online
+```
+# Fix: NGINX (app.conf)
+```
+server_tokens off;
+```
 
-#### 🔴 next (Critical)
-- Server Actions DoS vulnerability
-- Cache poisoning issues
-- Middleware bypass risks
-- SSRF and request smuggling issues
-- Fix: `npm audit fix --force (next upgrade required)`
+# Dependency vulnerabilities:
 
----
+![Click ==>> npm_audit_Report_File](<./Reports/SAST_DAST_Output_Report/npm_audit_report>)
 
-#### 🔴 form-data (Critical)
-- Unsafe boundary generation
-- Risk of request manipulation
+# Vulnerability 1: Vulnerable Next.js Version
+# Vulnerability Name: Outdated Next.js Framework with Multiple Critical Vulnerabilities
+# OWASP Category: A06: Vulnerable and Outdated Components
+# Affected File & Line Number: package.json → next dependency
 
----
+# Severity: Critical
 
-### 🟠 High Severity Packages
+# Description:
 
-- axios (DoS + prototype pollution)
-- glob (command injection risk)
-- minimatch (ReDoS vulnerability)
-- picomatch (regex DoS)
-- lodash (prototype pollution)
-- brace-expansion (ReDoS)
+The application is using a vulnerable version of Next.js, which contains multiple critical security issues such as:
+```
+Remote Code Execution (RCE)
+Server-Side Request Forgery (SSRF)
+Authorization Bypass
+Cache Poisoning
+Denial of Service (DoS)
+```
+These vulnerabilities exist due to outdated dependencies.
 
----
+# Business Impact: (An attacker can)
+```
+Execute arbitrary code on the server
+Bypass authentication
+Crash the application (DoS)
+Access internal services (SSRF)
+```
+# Proof of Concept:
+```
+npm audit
+```
 
-### 🟡 Moderate Issues
-
-- yaml (stack overflow risk)
-- brace-expansion dependency chain issues
-
----
-
-##  Recommended Fix
-
-```bash
-npm audit fix
+# Output shows:
+```
+Severity: critical
+```
+Next.js is vulnerable to RCE in React flight protocol
+# Fix:
+```
 npm audit fix --force
-
-✔ Upgrade Next.js to patched version
-✔ Replace vulnerable dependencies
-
 ```
---- 
-
-3️⃣ DAST – OWASP ZAP & Runtime Security
-
-![Click ==>> ZAP Scan Report](<./Documents/zap-report-0ca296b3.html>)
-
-Findings
-```bash
-No active injection vulnerabilities detected
-No exposed admin endpoints
-Basic runtime security validated
+OR
 ```
-Runtime Misconfiguration Found
-```bash
-SendGrid API Error
-{"error":"SendGrid API key not configured"}
-```
-Issue
-```bash
-API key missing in environment configuration
-Error exposes internal service dependency
-```
-OWASP Category
-```bash
-A05: Security Misconfiguration
-```
-🛠️ Fix
-```bash
-Store API key in .env
-Use AWS Secrets Manager
+npm install next@latest
 ```
 
-4️⃣  Manual Security Testing (Penetration Tests)
+###
 
-##  API Attack Simulation Results
+# Vulnerability 2: Axios DoS Vulnerability
+# Vulnerability Name: Axios Denial of Service (DoS)
+# OWASP Category: A06: Vulnerable and Outdated Components
+# Affected File: package.json → axios
 
----
+# Severity: High
 
-### 1️ Repeated POST Attack
+# Description:
 
-```bash id="k8x1aa"
-for i in $(seq 1 10); do
-  curl -X POST https://YourDomain/api/sendgrid
-done
+The application uses a vulnerable version of Axios which does not properly validate data size and allows prototype pollution.
+
+# Business Impact:
 ```
-Result:
-```bash
-{"error":"SendGrid API key not configured"}
+Application crash via large payload
+Memory exhaustion
+Service downtime
 ```
-Observation:
-API allowed repeated requests
-No rate limiting enabled
-Misconfiguration error exposed
-
-### 2️ XSS Injection Test
-```bash
-curl -X POST https://YourDomain/api/sendgrid \
--d '{"message":"<script>alert(1)</script>"}'
+# Proof of Concept:
 ```
-
-Result:
-```bash
-{"error":"SendGrid API key not configured"}
+npm audit
 ```
-Observation:
-No script execution observed
-Input not rendered in UI
-Currently safe, but input not validated
-
-### 3 Security Issues Identified & Fixes
-
-Issue 1: SendGrid API Key Misconfiguration Exposure
-Problem -> Application exposes internal error:
-
-```bash
-{"error":"SendGrid API key not configured"}
+# Recommended Fix:
 ```
-Risk:
-Internal system exposure
-OWASP A05: Security Misconfiguration
-
-Fix:
-✔ Use environment variables
-```bash
-SENDGRID_API_KEY=your_key_here
-```
-✔ Do not expose internal errors
-```bash
-if (!process.env.SENDGRID_API_KEY) {
-  console.error("SendGrid config missing");
-
-  return res.status(500).json({
-    error: "Internal Server Error"
-  });
-}
-```
-Issue 2: Missing Rate Limiting (DoS Risk)
-Problem -> Repeated API calls are allowed without restriction.
-
-Fix:
-```bash
-npm install express-rate-limit
-import rateLimit from "express-rate-limit";
-
-const limiter = rateLimit({
-  windowMs: 60 * 1000,
-  max: 5,
-  message: {
-    error: "Too many requests, try again later"
-  }
-});
-
-app.use("/api", limiter);
-```
-Issue 3: XSS Input Handling
-Risk -> User input may contain malicious scripts
-
-Fix:
-```bash
-npm install validator
-import validator from "validator";
-
-const message = validator.escape(req.body.message);
-```
-### 4 Security Hardening Improvements
-✔ Add Security Headers
-```bash
-npm install helmet
-import helmet from "helmet";
-app.use(helmet());
-```
-✔ Enable CORS Restriction
-```bash
-import cors from "cors";
-
-app.use(cors({
-  origin: "https://yourdomain.com"
-}));
-```
-✔ Limit Request Payload Size
-```bash
-app.use(express.json({ limit: "10kb" }));
-```
-## Final Security Impact After Fix:
-Test	Before Fix	After Fix
-POST Attack	Allowed	Rate Limited
-XSS Input	Accepted	Sanitized / Blocked
-SendGrid Error	Exposed	Hidden (Generic Error)
-
-# Conclusion:
-```bash
-✔ System is functionally secure
-✔ No active exploitation observed
-```
-# Improvements required in:
-Rate limiting
-Error handling
-Input validation
-
-### 5️ Sensitive Endpoint Exposure Test
-# .git folder access test
-```bash
-curl https://YourDomain/.git/HEAD
-```
-Result:
-403 Forbidden
-
-Observation:
-Directory access properly blocked via Nginx
-No source code leakage
-
-### 5  HTTP Security Header Check
-```bash
-curl -I https://YourDomain
-```
-## Response Analysis
-
-✔ HTTPS enabled
-✔ Server: Nginx
-✔ X-Frame-Options: SAMEORIGIN
-✔ X-Content-Type-Options: nosniff
-✔ X-XSS-Protection enabled
-✔ HSTS enabled
-
-##### Note:
-X-Powered-By: Next.js exposes framework info (minor info disclosure)
-
-📊 FINAL SECURITY SUMMARY:
-```bash
-Category	Status
-SAST (SonarQube)	✅ Passed
-SCA (npm audit)	❌ High/Critical Issues Found
-DAST (ZAP)	✅ No major vulnerabilities
-Runtime Security	⚠️ Misconfiguration detected
-Server Hardening	✅ .git blocked, headers OK
+npm audit fix
 ```
 
-🚨 OVERALL SECURITY RATING 
-```bash
-🟠 MEDIUM RISK (Production NOT fully secure)
+###
+
+# Vulnerability 3: form-data Critical Weak Randomness
+# Vulnerability Name: Weak Random Boundary Generation
+# OWASP Category: A02: Cryptographic Failures
+# Affected File: node_modules/form-data
+
+# Severity: Critical
+
+# Description:
+
+The form-data package uses unsafe randomness for boundary generation.
+
+# Business Impact:
 ```
-🛠️ PRIORITY FIX LIST:
-```bash
-🔴 Critical
-Upgrade Next.js (security patches)
-Fix axios, form-data vulnerabilities
-
-🟠 High
-glob, lodash, minimatch upgrades
-
-🟡 Medium
-yaml dependency fix
-⚙️ Misconfiguration
-Add SendGrid API key securely
-Remove exposed error messages
+Predictable request boundaries
+Potential request manipulation
+```
+# Proof of Concept:
 
 ```
-### CONCLUSION
+npm audit
+```
+# Recommended Fix:
+```
+npm audit fix
+```
+###
 
-## The application has:
+# Vulnerability 4: Lodash Prototype Pollution
+# Vulnerability Name: Prototype Pollution in Lodash
+# OWASP Category: A03: Injection
+# Affected File: node_modules/lodash
 
-Strong SAST results (clean code)
-Proper server hardening
-Functional DAST protection
+# Severity: High
 
-## BUT:
+# Description:
 
-Dependency vulnerabilities exist
-Critical Next.js security patches required
-Runtime misconfiguration present
+The Lodash library allows modification of object prototypes.
 
----
+# Business Impact:
+```
+Modify application behavior
+Bypass validation
+Potential code execution
+```
+# Proof of Concept:
 
+```
+npm audit
+```
+# Fix:
+```
+npm update lodash
+```
+###
 
+# Vulnerability 5: glob Command Injection
+# Vulnerability Name: Command Injection via glob CLI
+# OWASP Category: A03: Injection
+
+# Severity: High
+
+# Description:
+
+The glob package allows execution of commands via CLI flags.
+
+# Business Impact:
+```
+Arbitrary command execution
+Server compromise
+```
+# Proof of Concept
+```
+npm audit
+```
+# Recommended Fix
+
+```
+npm audit fix
+```
+###
+
+# Vulnerability 6: ReDoS Vulnerabilities (Multiple Packages)
+# Vulnerability Name: Regular Expression Denial of Service (ReDoS)
+# OWASP Category: A06: Vulnerable Components
+# Affected Packages:
+```
+brace-expansion
+minimatch
+picomatch
+yaml
+```
+# Severity: Medium–High
+# Description:
+
+These libraries contain inefficient regex patterns causing excessive CPU usage.
+
+# Business Impact:
+
+```
+Server slowdown
+Application crash
+```
+# Proof of Concept:
+```
+npm audit
+```
+# Fix:
+```
+npm audit fix
+```
+# Updated Summary:
+```
+Severity	Count
+Critical	2
+High	5
+Medium	2
+```
+
+# SAST Report:
+
+![Click ==>> SonarScanner Report screenshots ](<./Reports/SAST_DAST_Output_Report/Sonar_report.png>)
+
+# DAST (OWSAP ZAP) Report:
+
+![Click ==>> OWSAP ZAP Output Report File](<./Reports/SAST_DAST_Output_Report/zap-report-0ca296b3.html>)

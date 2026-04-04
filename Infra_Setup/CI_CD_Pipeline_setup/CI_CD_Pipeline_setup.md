@@ -11,10 +11,7 @@ Before starting, ensure you have:
 - GitHub repository
 - AWS EC2 instances:
   - 1 Testing Server (SonarQube + Scanner + OWASP ZAP)
-  - 1 Deployment Server (Application hosting)
-- Ubuntu/Linux OS recommended
-- Docker installed (for SonarQube server)
-- SSH access to deployment server
+  - 2 Deployment Server (Application hosting)
 
 ---
 
@@ -83,6 +80,8 @@ Add the following secrets:
 | SONAR_TOKEN | SonarQube authentication token |
 | DOMAIN | Application domain (e.g. https://Yourdomain.com) |
 | HOST | Deployment username (e.g. ubuntu or devops) |
+| PATH | Runner path |
+| DEPLOY_PATH | Deployment path |
 
 ---
 
@@ -96,46 +95,20 @@ Create file:
 
 ---
 
-# 5. SonarQube Setup (Testing Server)
-
-Run SonarQube using Docker:
-
-```bash
-docker run -d --name sonarqube \
-  -p 9000:9000 \
-  sonarqube:lts
-```
-
-Access:
-```
-http://<testing-server-ip>:9000
-```
-
----
-
-# 6. OWASP ZAP (Optional DAST Step)
-
-```bash
-docker run --rm -t ghcr.io/zaproxy/zaproxy:stable \
-  zap-baseline.py -t https://your-domain.com
-```
-
----
-
-# 7. Deployment Flow
+# 5. Deployment Flow
 
 ```
 GitHub Push → Runner (Testing Server)
              → npm ci
              → SonarQube Scan
              → Approval/Success
-             → SSH Deploy to EC2
+             → SSH Deploy to EC2(Deployment Server)
              → Application Restart
 ```
 
 ---
 
-# 8. Troubleshooting
+# 6. Troubleshooting
 
 ### Runner not connected
 - Re-run config.sh
@@ -149,11 +122,11 @@ GitHub Push → Runner (Testing Server)
 
 ---
 
-# 9. Conclusion
+# 7. Conclusion
 
 This pipeline provides:
 - CI (Build + Test)
 - SAST (SonarQube)
 - CD (EC2 Deployment)
-- Optional DAST (OWASP ZAP)
+- DAST (OWASP ZAP)
 

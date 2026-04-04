@@ -224,8 +224,8 @@ server {
     }
 
     #  Block specific bad IPs
-    deny 192.168.1.100;
-    deny 203.0.113.10;
+    # deny 192.168.1.100;
+    # deny 203.0.113.10;
 
     #  allow only specific IP range
     # allow 1.2.3.4;
