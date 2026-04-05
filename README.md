@@ -1,10 +1,10 @@
-# 🚀 DevSecOps CI/CD Pipeline (SAST + DAST + SonarQube + OWASP ZAP)
+## DevSecOps CI/CD Pipeline (SAST + DAST + SonarQube + OWASP ZAP)
 
-## 📌 Overview
+### Overview
 
 This project implements a complete DevSecOps CI/CD pipeline using GitHub Actions, SonarQube, and OWASP ZAP.
 
-##  Architecture
+###  Architecture
 
 ![Click ==>> Create Testing & Deployment Server ](<DEPLOYMENT.md>)
 
@@ -20,19 +20,19 @@ GitHub Actions CI/CD
         |
         |—— DAST → OWASP ZAP scan (live URL)
 
-It automates:
+## It automates:
 
- ## Code push from developer
- ## Static Application Security Testing (SAST)
- ## SonarQube Quality Gate validation
- ## Software Composition Analysis (SCA) for dependency vulnerability scanning
- ## Automated deployment via SSH
- ## Dynamic Application Security Testing (DAST)
- ## Security report generation
+ ### Code push from developer
+ ### Static Application Security Testing (SAST)
+ ### SonarQube Quality Gate validation
+ ### Software Composition Analysis (SCA) for dependency vulnerability scanning
+ ### Automated deployment via SSH
+ ### Dynamic Application Security Testing (DAST)
+ ### Security report generation
 
 
 
-## ⚙️ Tech Stack
+### Tech Stack
 
 - GitHub Actions
 - SonarQube
@@ -42,7 +42,7 @@ It automates:
 - AWS EC2
 - SSH Key Authentication
 
-## Pipeline Stages
+## Pipeline Stages:
 
 ### SAST
 SonarScanner runs static analysis and blocks pipeline on failure.
@@ -59,11 +59,11 @@ pm2 restart all
 ### DAST
 OWASP ZAP scans deployed application for runtime vulnerabilities.
 
-## 📊 Output
+### Output
 - SonarQube Report
 - ZAP HTML Report
 
-##  Benefits
+### Benefits
 - Automated security pipeline
 - Shift-left security
 - Production-ready DevSecOps flow

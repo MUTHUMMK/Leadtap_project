@@ -1,4 +1,4 @@
-# Testing Server Setup (DevSecOps Infrastructure)
+## Testing Server Setup (DevSecOps Infrastructure)
 
 This document describes the setup of the Security Testing Server (t3.medium) used for:
 -  SAST (SonarQube + Sonar Scanner)
@@ -7,9 +7,9 @@ This document describes the setup of the Security Testing Server (t3.medium) use
 
 ---
 
-# 1️ Server Requirements
+### 1️ Server Requirements:
 
-## EC2 Instance
+### EC2 Instance
 - Instance Type: t3.medium
 - OS: Ubuntu 22.04
 - Ports Open:
@@ -20,21 +20,21 @@ This document describes the setup of the Security Testing Server (t3.medium) use
 
 ---
 
-# 2️ Install SonarQube (Docker)
+### 2️ Install SonarQube (Docker):
 
 ```bash
 docker run -d   -p 9000:9000   --name sonarqube   sonarqube:9.9-community
 ```
 
-## Access
+### Access
 http://<server-ip>:9000
 
-## Default Login
+### Default Login
 - admin / admin
 
 ---
 
-# 3️ Install Sonar Scanner CLI
+### 3️ Install Sonar Scanner CLI:
 
 ```bash
 sudo wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-8.0.1.6346-linux-x64.zip
@@ -46,7 +46,7 @@ mv sonar-scanner-8.0.1.6346-linux-x64/* /opt/sonar-scanner
 
 ---
 
-##  Set PATH
+###  Set PATH
 
 ```bash
 echo 'export PATH=$PATH:/opt/sonar-scanner/bin' >> ~/.bashrc
@@ -55,7 +55,7 @@ source ~/.bashrc
 
 ---
 
-##  Verify
+###  Verify
 
 ```bash
 sonar-scanner -v
@@ -63,7 +63,7 @@ sonar-scanner -v
 
 ---
 
-# 4️ SonarQube Project Config
+### 4️ SonarQube Project Config:
 
 Create file:
 
@@ -81,7 +81,7 @@ sonar.sourceEncoding=UTF-8
 
 ---
 
-## Run Scan
+### Run Scan
 
 ```bash
 sonar-scanner   -Dsonar.host.url=http://server_ip:9000   -Dsonar.login=<YOUR_SONAR_TOKEN>
@@ -89,7 +89,7 @@ sonar-scanner   -Dsonar.host.url=http://server_ip:9000   -Dsonar.login=<YOUR_SON
 
 ---
 
-# 5️ OWASP ZAP Scan
+### 5️ OWASP ZAP Scan:
 
 ```bash
 sudo docker run --rm   --network host   -v "$(pwd):/zap/wrk"   ghcr.io/zaproxy/zaproxy:stable   zap-baseline.py   -t https://YourDomain/api/sendgrid   -r zap-report.html
@@ -97,7 +97,7 @@ sudo docker run --rm   --network host   -v "$(pwd):/zap/wrk"   ghcr.io/zaproxy/z
 
 ---
 
-# 6️ Purpose
+### 6️ Purpose:
 
 - SAST → SonarQube
 - SCA → npm audit
@@ -106,6 +106,6 @@ sudo docker run --rm   --network host   -v "$(pwd):/zap/wrk"   ghcr.io/zaproxy/z
 
 ---
 
-# Pipeline Flow
+## Pipeline Flow
 
 GitHub Push → Testing Server → SAST → SCA → DAST → Report

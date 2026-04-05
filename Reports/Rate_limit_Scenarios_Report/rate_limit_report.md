@@ -1,21 +1,20 @@
 # OWASP Security Test Report
 
 ## Vulnerability: Rate Limiting Implemented Verification
-
-# Endpoint Tested: https://muthummk.online/
-# Method: GET
-# Test Type: Rate Limiting Validation
-# Severity: Informational (Fix Verified)
+## Endpoint Tested: https://muthummk.online/
+## Method: GET
+## Test Type: Rate Limiting Validation
+## Severity: Informational (Fix Verified)
 
 ![Click ==>> Output_Response_Report_File](<./Output_Response(429_Too_Many_Requests).txt>)
 ---
 
-## Description
+### Description
 A rate limiting mechanism has been implemented on the API endpoint. This test validates that excessive requests are properly restricted.
 
 ---
 
-## Proof of Concept
+### Proof of Concept
 
 ### Command Used
 ```bash
@@ -24,7 +23,7 @@ for i in {1..80}; do curl -I https://muthummk.online/; done
 
 ---
 
-## Observed Output
+### Observed Output
 
 ```
 HTTP/1.1 429 Too Many Requests
@@ -32,7 +31,7 @@ HTTP/1.1 429 Too Many Requests
 
 ---
 
-## Result
+### Result
 
 - The server successfully blocks excessive requests.
 - Rate limiting is functioning as expected.
@@ -40,7 +39,7 @@ HTTP/1.1 429 Too Many Requests
 
 ---
 
-## Security Impact
+### Security Impact
 
 ### Before Fix
 - API was vulnerable to abuse
@@ -53,13 +52,13 @@ HTTP/1.1 429 Too Many Requests
 
 ---
 
-## Screenshot Evidence
+### Screenshot Evidence
 
 (Add your terminal screenshot here before submission)
 
 ---
 
-## Conclusion
+### Conclusion
 
 The rate limiting control is correctly implemented and effectively mitigates abuse scenarios.
 

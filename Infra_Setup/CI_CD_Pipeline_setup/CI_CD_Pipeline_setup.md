@@ -1,10 +1,10 @@
-# CI/CD Pipeline Setup Guide (GitHub Actions + EC2 + SonarQube)
+## CI/CD Pipeline Setup Guide (GitHub Actions + EC2 + SonarQube)
 
 This document explains how to set up a complete CI/CD pipeline using GitHub Actions, self-hosted runner, SonarQube, and EC2 deployment with SSH.
 
 ---
 
-# 1. Prerequisites
+### 1. Prerequisites:
 
 Before starting, ensure you have:
 
@@ -15,9 +15,9 @@ Before starting, ensure you have:
 
 ---
 
-# 2. Install GitHub Self-Hosted Runner (Testing Server)
+### 2. Install GitHub Self-Hosted Runner (Testing Server):
 
-## Step 1: Create Runner in GitHub
+### Step 1: Create Runner in GitHub
 
 Go to:
 ```
@@ -30,7 +30,7 @@ Select:
 
 Copy the commands provided by GitHub.
 
-## Step 2: Install Runner on EC2
+### Step 2: Install Runner on EC2
 
 Run on testing server:
 
@@ -41,7 +41,7 @@ curl -o actions-runner-linux-x64.tar.gz -L https://github.com/actions/runner/rel
 tar xzf actions-runner-linux-x64.tar.gz
 ```
 
-## Step 3: Configure Runner
+### Step 3: Configure Runner
 
 Replace values from GitHub page:
 
@@ -49,7 +49,7 @@ Replace values from GitHub page:
 ./config.sh --url https://github.com/your-repo --token YOUR_TOKEN
 ```
 
-## Step 4: Start Runner
+### Step 4: Start Runner
 
 ```bash
 ./run.sh
@@ -63,7 +63,7 @@ Replace values from GitHub page:
 
 ---
 
-# 3. GitHub Secrets Configuration
+#### 3. GitHub Secrets Configuration:
 
 Go to:
 ```
@@ -85,7 +85,7 @@ Add the following secrets:
 
 ---
 
-# 4. Example GitHub Actions CI/CD Pipeline
+### 4. Example GitHub Actions CI/CD Pipeline:
 
 Create file: 
 ```
@@ -95,7 +95,7 @@ Create file:
 
 ---
 
-# 5. Deployment Flow
+### 5. Deployment Flow:
 
 ```
 GitHub Push → Runner (Testing Server)
@@ -108,7 +108,7 @@ GitHub Push → Runner (Testing Server)
 
 ---
 
-# 6. Troubleshooting
+### 6. Troubleshooting:
 
 ### Runner not connected
 - Re-run config.sh
@@ -122,7 +122,7 @@ GitHub Push → Runner (Testing Server)
 
 ---
 
-# 7. Conclusion
+### 7. Conclusion:
 
 This pipeline provides:
 - CI (Build + Test)

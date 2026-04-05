@@ -1,4 +1,4 @@
-# DevSecOps Architecture & CI/CD Workflow
+## DevSecOps Architecture & CI/CD Workflow
 
 Dev → Code → CI
                 →
@@ -13,13 +13,13 @@ Dev → Code → CI
             Production
 
 
-## Overview
+### Overview
 
 The application is deployed using a two-server architecture to separate production workload from security testing and CI/CD operations. This design follows DevSecOps principles by integrating security checks into the deployment pipeline.
 
 ---
 
-## Infrastructure Setup
+### Infrastructure Setup
 
 ![Click ==>> Testing Server Setup](<./Infra_Setup/Server_setup/testing-server-setup.md>)
 
@@ -84,9 +84,9 @@ This server hosts the live application.
 
 ---
 
-## CI/CD Pipeline Workflow
+### CI/CD Pipeline Workflow
 
-# Create the CI/CD Pipeline workflow 
+#### Create the CI/CD Pipeline workflow 
 ![Click ==>> CI/CD Pipeline Setup](<./Infra_Setup/CI_CD_Pipeline_setup/CI_CD_Pipeline_setup.md)
 
 A secure CI/CD pipeline is implemented using GitHub Actions with a self-hosted runner on the testing server.

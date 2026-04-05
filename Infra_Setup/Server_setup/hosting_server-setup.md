@@ -4,9 +4,9 @@ This document describes step-by-step setup of Ubuntu 22.04 LTS server, hardening
 
 ---
 
-# 1 Create Linux Server (Ubuntu 22.04 LTS)
+### 1 Create Linux Server (Ubuntu 22.04 LTS):
 
-#  Login & Update System
+### Login & Update System
 
 ```bash
 sudo apt update && sudo apt upgrade -y
@@ -14,7 +14,7 @@ sudo apt update && sudo apt upgrade -y
 
 ---
 
-#  2 Create DevOps User
+### 2 Create DevOps User:
 
 ```bash
 sudo useradd devops
@@ -24,7 +24,7 @@ sudo passwd devops
 
 ---
 
-# User Types
+### User Types
 
 -  Human User:
   - SSH key login
@@ -35,13 +35,13 @@ sudo passwd devops
 
 ---
 
-# 3 SSH Hardening
+### 3 SSH Hardening:
 
 ```bash
 sudo nano /etc/ssh/sshd_config
 ```
 
-# Configuration
+### Configuration
 
 ```
 Port 222
@@ -52,14 +52,14 @@ AllowUsers devops
 
 ---
 
-##  SSH Key Setup
+### SSH Key Setup
 
 ```bash
 sudo mkdir -p /home/devops/.ssh
 sudo cp ~/.ssh/authorized_keys /home/devops/.ssh/
 ```
 
-## Permissions
+### Permissions
 
 ```bash
 sudo chown -R devops:devops /home/devops
@@ -70,19 +70,19 @@ sudo systemctl restart ssh
 
 ---
 
-# 4 Configure UFW Firewall
+### 4 Configure UFW Firewal:
 
 ```bash
 sudo apt install ufw -y
 ```
-## Enable Firewall
+### Enable Firewall
 
 ```bash
 sudo ufw enable
 sudo ufw status
 ```
 
-## Allow Ports
+### Allow Ports
 
 ```bash
 sudo ufw allow 222/tcp # custom SSH port
@@ -93,7 +93,7 @@ sudo ufw allow 3000/tcp # App running port
 
 ---
 
-## Security Enhancements
+### Security Enhancements
 
 ```bash
 sudo ufw limit 222/tcp
@@ -101,13 +101,13 @@ sudo ufw limit 222/tcp
 
 ---
 
-# 5 Install Node.js (NVM)
+### 5 Install Node.js (NVM):
 
 ```bash
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 ```
 
-## Load NVM
+### Load NVM
 
 ```bash
 sudo cp /etc/skel/.bashrc /home/devops/
@@ -120,7 +120,7 @@ export NVM_DIR="$HOME/.nvm"
 source ~/.bashrc
 ```
 
-## Install Node.js 18
+### Install Node.js 18
 
 ```bash
 nvm install 18
@@ -128,7 +128,7 @@ nvm use 18
 nvm alias default 18
 ```
 
-## Verify
+### Verify
 
 ```bash
 node -v
@@ -137,16 +137,16 @@ npm -v
 
 ---
 
-# 6 Application Deployment
+### 6 Application Deployment:
 
-## Clone Project
+### Clone Project
 
 ```bash
 git clone https://github.com/demo.git
 cd app
 ```
 
-## Install & Build
+### Install & Build
 
 ```bash
 npm install
@@ -156,7 +156,7 @@ npm start
 
 ---
 
-##  PM2 Process Manager
+###  PM2 Process Manager
 
 ```bash
 npm install pm2 -g
@@ -164,7 +164,7 @@ pm2 start npm --name app -- start
 pm2 status
 ```
 
-## Auto Restart on Boot
+### Auto Restart on Boot
 
 ```bash
 pm2 startup
@@ -173,7 +173,7 @@ pm2 save
 
 ---
 
-## Check Application
+### Check Application
 
 ```bash
 curl http://localhost:3000
@@ -181,9 +181,9 @@ curl http://localhost:3000
 
 ---
 
-# 7 Nginx Reverse Proxy
+### 7 Nginx Reverse Proxy:
 
-## Install Nginx
+### Install Nginx
 
 ```bash
 sudo apt install nginx -y
@@ -194,13 +194,13 @@ sudo systemctl status nginx
 
 ---
 
-## Configure Site
+### Configure Site
 
 ```bash
 sudo nano /etc/nginx/sites-available/app.conf
 ```
 
-## Config
+### Config
 
 ```nginx
 #  Rate Limiting Zone (add in http block in nginx.conf)
@@ -245,7 +245,7 @@ server {
 
 ---
 
-## Enable Site
+### Enable Site
 
 ```bash
 sudo ln -s /etc/nginx/sites-available/app.conf /etc/nginx/sites-enabled/
@@ -255,15 +255,15 @@ sudo systemctl restart nginx
 
 ---
 
-# 8 SSL Configuration (HTTPS)
+### 8 SSL Configuration (HTTPS):
 
-## Install Certbot
+### Install Certbot
 
 ```bash
 sudo apt install certbot python3-certbot-nginx -y
 ```
 
-## Enable SSL
+### Enable SSL
 
 ```bash
 sudo certbot --nginx -d YourDomain
@@ -271,7 +271,7 @@ sudo certbot --nginx -d YourDomain
 
 ---
 
-## Verify HTTPS
+### Verify HTTPS
 
 ```bash
 curl -I https://YourDomain
@@ -279,7 +279,7 @@ curl -I https://YourDomain
 
 ---
 
-#  System Flow
+###  System Flow
 
 User → HTTPS (443)
    ↓
@@ -289,7 +289,7 @@ Node.js App (PM2 on 3000)
 
 ---
 
-# Final Result
+## Final Result
 
 ✔ Secure SSH login  
 ✔ Firewall enabled  
