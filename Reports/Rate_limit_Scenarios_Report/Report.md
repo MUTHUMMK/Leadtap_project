@@ -5,13 +5,13 @@ requests per minute.
 ```
 ![Click ==>> Real_Time_Check_Report_File ](<./rate_limit_report.md>)
 
-# Vulnerability: Missing Rate Limiting on Contact API
-# Vulnerability Name: Missing Rate Limiting on /api/sendgrid
-# OWASP Category: A04: Insecure Design
-# Affected File & Line Number: /api/sendgrid.js  
-# Severity: High
+=> Vulnerability: Missing Rate Limiting on Contact API
+=> Vulnerability Name: Missing Rate Limiting on /api/sendgrid
+=> OWASP Category: A04: Insecure Design
+=> Affected File & Line Number: /api/sendgrid.js  
+=> Severity: High
 
-# Description:
+ Description:
 ```
 1.The contact form API endpoint /api/sendgrid does not implement any rate limiting or request throttling.
 
