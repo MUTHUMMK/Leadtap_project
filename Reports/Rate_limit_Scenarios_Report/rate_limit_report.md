@@ -1,10 +1,10 @@
-# OWASP Security Test Report
+## OWASP Security Test Report
 
-## Vulnerability: Rate Limiting Implemented Verification
-## Endpoint Tested: https://muthummk.online/
-## Method: GET
-## Test Type: Rate Limiting Validation
-## Severity: Informational (Fix Verified)
+### Vulnerability: Rate Limiting Implemented Verification
+### Endpoint Tested: https://muthummk.online/
+### Method: GET
+### Test Type: Rate Limiting Validation
+### Severity: Informational (Fix Verified)
 
 ![Click ==>> Output_Response_Report_File](<./Output_Response(429_Too_Many_Requests).txt>)
 ---

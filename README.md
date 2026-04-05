@@ -20,15 +20,16 @@ GitHub Actions CI/CD
         |
         |—— DAST → OWASP ZAP scan (live URL)
 
-## It automates:
-
- ### Code push from developer
- ### Static Application Security Testing (SAST)
- ### SonarQube Quality Gate validation
- ### Software Composition Analysis (SCA) for dependency vulnerability scanning
- ### Automated deployment via SSH
- ### Dynamic Application Security Testing (DAST)
- ### Security report generation
+#### It automates:
+```
+ Code push from developer
+ Static Application Security Testing (SAST)
+ SonarQube Quality Gate validation
+ Software Composition Analysis (SCA) for dependency vulnerability scanning
+ Automated deployment via SSH
+ Dynamic Application Security Testing (DAST)
+ Security report generation
+ ```
 
 
 
