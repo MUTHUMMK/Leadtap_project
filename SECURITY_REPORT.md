@@ -1,6 +1,6 @@
-## Application Security Assessment & Infrastructure Hardening Report
+# 🛡️ Application Security Assessment & Infrastructure Hardening Report
 
-### Including OWASP Top 10 Mapping, Threat Scenarios, and Mitigation Strategies
+## Including OWASP Top 10 Mapping, Threat Scenarios, and Mitigation Strategies
 
 ---
 
@@ -10,7 +10,7 @@ This application follows a **defense-in-depth strategy** by implementing securit
 
 ---
 
-### 1. Secure SSH Configuration (Server Hardening)
+## 1. Secure SSH Configuration (Server Hardening):
 
 ### OWASP Category
 
@@ -36,7 +36,7 @@ This application follows a **defense-in-depth strategy** by implementing securit
 
 ---
 
-### 2. Fail2Ban (Intrusion Prevention)
+## 2. Fail2Ban (Intrusion Prevention):
 
 ### OWASP Category
 
@@ -63,13 +63,13 @@ This application follows a **defense-in-depth strategy** by implementing securit
 
 ---
 
-### 3. NGINX Security Hardening
+## 3. NGINX Security Hardening:
 
 ### OWASP Category
 
 * A05: Security Misconfiguration
 
-### Implementatio
+### Implementation 
 
 ### Security Headers Configured
 
@@ -98,7 +98,7 @@ add_header Content-Security-Policy "default-src 'self';";
 
 ---
 
-## 4. NGINX Rate Limiting (DoS Protection)
+## 4. NGINX Rate Limiting (DoS Protection):
 
 ### OWASP Category
 
@@ -122,7 +122,7 @@ add_header Content-Security-Policy "default-src 'self';";
 
 ---
 
-### 5. Dependency Vulnerability Management
+## 5. Dependency Vulnerability Management
 
 ### OWASP Category
 
