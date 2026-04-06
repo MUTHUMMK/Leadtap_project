@@ -1,49 +1,78 @@
-## Header vulnerability:
+## Application Security Assessment & Infrastructure Hardening Report
 
-### Vulnerability 1: Missing Security Headers
-### Vulnerability Name: Missing Security Headers
-### OWASP Category: A05: Security Misconfiguration
-### Affected File & Line Number: NGINX / Next.js configuration (headers not set)
-### Severity: Medium
-### Description:
+### Including OWASP Top 10 Mapping, Threat Scenarios, and Mitigation Strategies
 
-#### The application response headers are missing important security protections such as:
+---
 
-```
-* Content-Security-Policy
-* X-Frame-Options
-* X-Content-Type-Options
-* Strict-Transport-Security
-```
+## Security Controls Implemented
 
-### From your response:
-![Click ==>> Missing_Header_Screenshot](<./screenshots/Missing_Header_Screenshot.png>)
+This application follows a **defense-in-depth strategy** by implementing security controls at the server, application, and dependency levels.
 
-```
-HTTP/1.1 200 OK
-Server: nginx/1.18.0 (Ubuntu)
-X-Powered-By: Next.js
-```
-These headers indicate default configuration without security hardening.
+---
 
-### Business Impact: (An attacker can)
-```
-Perform Clickjacking attacks (no X-Frame-Options)
-Execute XSS attacks more easily (no CSP)
-Exploit MIME sniffing vulnerabilities
-Downgrade HTTPS attacks (no HSTS)
-```
-### Proof of Concept:
-```
-curl -I https://muthummk.online
-```
-Observe missing headers in response.
+### 1. Secure SSH Configuration (Server Hardening)
 
-### Fix:
+### OWASP Category
 
-### Option 1: Fix in NGINX (app.conf)
+* A05: Security Misconfiguration
+* A07: Identification & Authentication Failures
 
-![Click ==>> Header_added_after_Screenshot](<./screenshots/Header_Added_Screenshot.png>)
+### Implementation
+
+* Disabled root login (`PermitRootLogin no`)
+* Configured custom SSH port (e.g., `222`)
+* Enforced key-based authentication
+* Integrated Fail2Ban to prevent brute-force attacks
+
+### Behavior
+
+* Unauthorized login attempts → blocked
+* Only authorized users with SSH keys can access
+
+### Security Benefit
+
+* Prevents brute-force and unauthorized root access
+* Reduces attack surface by hiding default SSH port
+
+---
+
+### 2. Fail2Ban (Intrusion Prevention)
+
+### OWASP Category
+
+* A09: Security Logging & Monitoring Failures
+* A04: Insecure Design
+
+### Implementation
+
+* Monitors:
+
+  * `/var/log/auth.log` (SSH attacks)
+  * `/var/log/nginx/access.log` (API abuse)
+* Automatically bans malicious IPs via firewall
+
+### Behavior
+
+* Multiple failed attempts → IP banned
+* Supports configurable retry and ban duration
+
+### Security Benefit
+
+* Real-time attack detection and blocking
+* Prevents repeated abuse from same attacker
+
+---
+
+### 3. NGINX Security Hardening
+
+### OWASP Category
+
+* A05: Security Misconfiguration
+
+### Implementatio
+
+### Security Headers Configured
+
 ```
 add_header X-Frame-Options "DENY";
 add_header X-Content-Type-Options "nosniff";
@@ -52,233 +81,109 @@ add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" alway
 add_header Content-Security-Policy "default-src 'self';";
 ```
 
-### Option 2: Fix in Next.js (next.config.js)
-```
-module.exports = {
-  async headers() {
-    return [
-      {
-        source: "/(.*)",
-        headers: [
-          { key: "X-Frame-Options", value: "DENY" },
-          { key: "X-Content-Type-Options", value: "nosniff" },
-          { key: "Content-Security-Policy", value: "default-src 'self'" }
-        ],
-      },
-    ];
-  },
-};
+### Behavior & Protection
+
+| Header                 | Protection                 |
+| ---------------------- | -------------------------- |
+| X-Frame-Options        | Prevents clickjacking      |
+| X-Content-Type-Options | Stops MIME sniffing        |
+| X-XSS-Protection       | Basic XSS protection       |
+| HSTS                   | Forces HTTPS               |
+| CSP                    | Restricts resource loading |
+
+### Security Benefit
+
+* Protects against XSS, clickjacking, and content injection
+* Enforces secure communication (HTTPS only)
+
+---
+
+## 4. NGINX Rate Limiting (DoS Protection)
+
+### OWASP Category
+
+* A04: Insecure Design
+* A05: Security Misconfiguration
+
+### Implementation
+
+* Limited requests per IP for `/api` and web routes
+* Returns `HTTP 429 Too Many Requests` on abuse
+
+### Behavior
+
+* Normal users unaffected
+* Attackers slowed down or blocked
+
+### Security Benefit
+
+* Prevents API abuse and request flooding
+* Reduces impact of DoS attacks
+
+---
+
+### 5. Dependency Vulnerability Management
+
+### OWASP Category
+
+* A06: Vulnerable and Outdated Components
+
+### Implementation
+
+* Performed security scan using:
+
+  ```
+  npm audit
+  ```
+* Identified vulnerabilities in dependencies (e.g., axios, lodash, next)
+* Applied fixes using:
+
+  ```
+  npm audit fix
+  npm audit fix --force
+  ```
+
+### Behavior
+
+* Vulnerable packages updated to secure versions
+
+### Security Benefit
+
+* Prevents exploitation of known vulnerabilities
+* Ensures secure and updated dependencies
+
+---
+
+## Defense-in-Depth Architecture
 
 ```
-
-### Vulnerability 2: Information Disclosure via Headers
-### OWASP Category: A05: Security Misconfiguration
-### Severity: Low
-### Description:
-The server exposes technology stack:
-```
-Server: nginx/1.18.0 (Ubuntu)
-X-Powered-By: Next.js
-```
-### Impact:
-```
-Helps attackers identify known vulnerabilities
-Makes targeted attacks easier
-```
-### Proof of Concept:
-```
-curl -I https://muthummk.online
-```
-### Fix: NGINX (app.conf)
-```
-server_tokens off;
+Client → NGINX (Rate Limit + Headers)
+       → Application (Next.js)
+       → Logs → Fail2Ban → Firewall (IP Ban)
+       → SSH Protection (Fail2Ban + Key Auth)
 ```
 
-## Dependency vulnerabilities:
+---
 
-![Click ==>> npm_audit_Report_File](<./Reports/SAST_DAST_Output_Report/npm_audit_report>)
+## Security Outcome
 
-### Vulnerability 1: Vulnerable Next.js Version
-### Vulnerability Name: Outdated Next.js Framework with Multiple Critical Vulnerabilities
-### OWASP Category: A06: Vulnerable and Outdated Components
-### Affected File & Line Number: package.json → next dependency
-### Severity: Critical
-### Description:
+| Layer       | Protection                  |
+| ----------- | --------------------------- |
+| SSH         | Prevents brute-force login  |
+| NGINX       | Rate limiting + headers     |
+| Fail2Ban    | Automatic attacker blocking |
+| Application | Secure dependencies         |
 
-The application is using a vulnerable version of Next.js, which contains multiple critical security issues such as:
-```
-Remote Code Execution (RCE)
-Server-Side Request Forgery (SSRF)
-Authorization Bypass
-Cache Poisoning
-Denial of Service (DoS)
-```
-These vulnerabilities exist due to outdated dependencies.
+---
 
-### Business Impact: (An attacker can)
-```
-Execute arbitrary code on the server
-Bypass authentication
-Crash the application (DoS)
-Access internal services (SSRF)
-```
-### Proof of Concept:
-```
-npm audit
-```
+## Summary
 
-### Output shows:
-```
-Severity: critical
-```
-Next.js is vulnerable to RCE in React flight protocol
-### Fix:
-```
-npm audit fix --force
-```
-OR
-```
-npm install next@latest
-```
+The system is secured using a **multi-layered approach aligned with OWASP Top 10**, including:
 
-### Vulnerability 2: Axios DoS Vulnerability
-### Vulnerability Name: Axios Denial of Service (DoS)
-### OWASP Category: A06: Vulnerable and Outdated Components
-### Affected File: package.json → axios
-### Severity: High
-### Description:
+* Protection against **brute-force attacks**
+* Prevention of **DoS and API abuse**
+* Mitigation of **web-based attacks (XSS, clickjacking)**
+* Continuous monitoring and **automatic IP blocking**
+* Secure dependency management
 
-The application uses a vulnerable version of Axios which does not properly validate data size and allows prototype pollution.
-
-### Business Impact:
-```
-Application crash via large payload
-Memory exhaustion
-Service downtime
-```
-### Proof of Concept:
-```
-npm audit
-```
-### Recommended Fix:
-```
-npm audit fix
-```
-
-### Vulnerability 3: form-data Critical Weak Randomness
-### Vulnerability Name: Weak Random Boundary Generation
-### OWASP Category: A02: Cryptographic Failures
-### Affected File: node_modules/form-data
-### Severity: Critical
-### Description:
-
-The form-data package uses unsafe randomness for boundary generation.
-
-### Business Impact:
-```
-Predictable request boundaries
-Potential request manipulation
-```
-### Proof of Concept:
-
-```
-npm audit
-```
-### Recommended Fix:
-```
-npm audit fix
-```
-
-### Vulnerability 4: Lodash Prototype Pollution
-### Vulnerability Name: Prototype Pollution in Lodash
-### OWASP Category: A03: Injection
-### Affected File: node_modules/lodash
-### Severity: High
-### Description:
-
-The Lodash library allows modification of object prototypes.
-
-### Business Impact:
-```
-Modify application behavior
-Bypass validation
-Potential code execution
-```
-### Proof of Concept:
-
-```
-npm audit
-```
-### Fix:
-```
-npm update lodash
-```
-
-
-### Vulnerability 5: glob Command Injection
-### Vulnerability Name: Command Injection via glob CLI
-### OWASP Category: A03: Injection
-### Severity: High
-### Description:
-
-The glob package allows execution of commands via CLI flags.
-
-### Business Impact:
-```
-Arbitrary command execution
-Server compromise
-```
-### Proof of Concept
-```
-npm audit
-```
-### Recommended Fix
-
-```
-npm audit fix
-```
-
-### Vulnerability 6: ReDoS Vulnerabilities (Multiple Packages)
-### Vulnerability Name: Regular Expression Denial of Service (ReDoS)
-### OWASP Category: A06: Vulnerable Components
-### Affected Packages:
-```
-brace-expansion
-minimatch
-picomatch
-yaml
-```
-### Severity: Medium–High
-### Description:
-
-These libraries contain inefficient regex patterns causing excessive CPU usage.
-
-### Business Impact:
-
-```
-Server slowdown
-Application crash
-```
-### Proof of Concept:
-```
-npm audit
-```
-### Fix:
-```
-npm audit fix
-```
-### Updated Summary:
-```
-Severity	Count
-Critical	2
-High	5
-Medium	2
-```
-
-## SAST Report:
-
-![Click ==>> SonarScanner Report screenshots ](<./Reports/SAST_DAST_Output_Report/Sonar_report.png>)
-
-## DAST (OWSAP ZAP) Report:
-
-![Click ==>> OWSAP ZAP Output Report File](<./Reports/SAST_DAST_Output_Report/zap-report-0ca296b3.html>)
+This significantly reduces the overall attack surface and enhances system resilience.
