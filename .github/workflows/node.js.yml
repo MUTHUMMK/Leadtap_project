@@ -3,8 +3,8 @@ name: DevSecOps CI/CD Pipeline
 on:
   push:
     branches:
-      - security-fixes
-
+      - main
+      #- security-fixes
 jobs:
   build:
     runs-on: testing
