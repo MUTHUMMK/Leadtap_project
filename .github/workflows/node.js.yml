@@ -3,8 +3,8 @@ name: DevSecOps CI/CD Pipeline
 on:
   push:
     branches:
-      - main
-      #- security-fixes
+      #- main
+      - security-fixes
 jobs:
   build:
     runs-on: testing
@@ -83,7 +83,7 @@ jobs:
             pm2 restart all
 
       # DAST - OWASP ZAP Scan (Post-deploy)
-      - name: OWASP ZAP Baseline Scan
+      - name: OWASP ZAP Baseline Scan 
         run: |
           sudo docker run --rm \
             --network host \
